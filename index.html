@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL FILLER - Database & Schema Generator</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Roboto:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --md-primary: #6200ee;
+            --md-primary-variant: #3700b3;
+            --md-secondary: #03dac6;
+            --md-surface: #ffffff;
+            --md-background: #f4f5f8;
+            --md-error: #b00020;
+            --md-on-primary: #ffffff;
+            --md-on-surface: #121212;
+            --md-drawer-bg: #121824;
+            --md-drawer-text: #e2e8f0;
+            --md-drawer-active-bg: rgba(98, 0, 238, 0.25);
+            --md-drawer-active-color: #bb86fc;
+            --border-color: #e2e8f0;
+            --editor-bg: #0d1117;
+            --editor-text: #c9d1d9;
+        }
+
+        body {
+            font-family: 'Roboto', 'Inter', sans-serif;
+            background-color: var(--md-background);
+            color: var(--md-on-surface);
+            overflow-x: hidden;
+        }
+
+        /* Material Design 2 Navigation Drawer / Sidebar */
+        .sidebar {
+            width: 290px;
+            background-color: var(--md-drawer-bg);
+            color: var(--md-drawer-text);
+            min-height: 100vh;
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.18);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar .brand {
+            padding: 20px 20px 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar .brand-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.8px;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .drawer-section-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #94a3b8;
+            padding: 16px 20px 8px 20px;
+        }
+
+        /* MD2 Navigation Items with Pill Shape */
+        .table-list-item {
+            cursor: pointer;
+            border-radius: 28px;
+            padding: 10px 16px;
+            margin: 2px 12px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #cbd5e1;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .table-list-item:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
+        .table-list-item.active {
+            background-color: var(--md-primary);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 3px 8px rgba(98, 0, 238, 0.4);
+        }
+
+        .table-list-item.active .hover-icon {
+            color: #ffffff !important;
+        }
+
+        .hover-icon {
+            opacity: 0.7;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .hover-icon:hover {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        /* MD2 Elevated Cards & Buttons */
+        .main-workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .top-navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #64748b;
+            font-weight: 500;
+            padding: 14px 20px;
+            border-bottom: 3px solid transparent;
+            border-radius: 0;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--md-primary);
+            background-color: rgba(98, 0, 238, 0.04);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--md-primary);
+            border-bottom-color: var(--md-primary);
+            background: transparent;
+            font-weight: 700;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            background: #ffffff;
+        }
+
+        .btn-md-contained {
+            background-color: var(--md-primary);
+            color: var(--md-on-primary);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.78rem;
+            padding: 8px 16px;
+            box-shadow: 0 2px 4px rgba(98, 0, 238, 0.25);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-md-contained:hover {
+            background-color: var(--md-primary-variant);
+            box-shadow: 0 4px 10px rgba(98, 0, 238, 0.35);
+            color: #ffffff;
+        }
+
+        .btn-md-outlined {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-md-outlined:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .table-grid {
+            font-size: 0.875rem;
+        }
+
+        .table-grid th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.6px;
+            vertical-align: middle;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .sql-output-box {
+            background-color: var(--editor-bg);
+            color: var(--editor-text);
+            font-family: 'Fira Code', monospace;
+            border-radius: 10px;
+            padding: 20px;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            max-height: 520px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 1px solid #30363d;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* ERD D3 styling */
+        #erd-canvas {
+            width: 100%;
+            height: 550px;
+            background-color: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        #erd-canvas:active {
+            cursor: grabbing;
+        }
+
+        .d3-table-card {
+            fill: #ffffff;
+            stroke: #cbd5e1;
+            stroke-width: 1.5;
+            rx: 8;
+            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.08));
+        }
+
+        .d3-table-header {
+            fill: #1e293b;
+            rx: 8;
+        }
+
+        .d3-table-title {
+            fill: #ffffff;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .d3-column-text {
+            font-size: 11px;
+            fill: #334155;
+        }
+
+        .d3-pk-badge {
+            fill: #f59e0b;
+            font-weight: bold;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.03);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.18);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="d-flex w-100 overflow-hidden">
+        
+        <!-- SIDEBAR: Material Design 2 Drawer -->
+        <div class="sidebar">
+            <div class="brand d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-primary p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: linear-gradient(135deg, #6200ee, #bb86fc) !important;">
+                        <i class="bi bi-database-fill-gear text-white fs-5"></i>
+                    </div>
+                    <div>
+                        <div class="brand-title lh-1">SQL FILLER</div>
+                        <small class="text-white fw-normal" style="font-size: 0.7rem; letter-spacing: 0.5px;">Schema & Data Studio</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between drawer-section-label">
+                <span>Daftar Tabel</span>
+                <button class="btn btn-sm btn-md-outlined py-0 px-2 d-flex align-items-center gap-1" onclick="addNewTablePrompt()" title="Tambah Tabel Baru">
+                    <i class="bi bi-plus-lg"></i> Baru
+                </button>
+            </div>
+
+            <!-- List of Tables -->
+            <div class="flex-grow-1 overflow-y-auto px-1" id="tables-list-container">
+                <!-- Dynamically populated tables list -->
+            </div>
+
+            <!-- Global Action Footer -->
+            <div class="p-3 border-top border-secondary border-opacity-25 mt-auto">
+                <button class="btn btn-sm btn-outline-warning w-100 mb-2 rounded-pill d-flex align-items-center justify-content-center gap-2 py-2" style="font-size: 0.8rem;" onclick="loadSampleSchema()">
+                    <i class="bi bi-magic"></i> Load Sample Schema
+                </button>
+                <button class="btn btn-sm btn-outline-danger w-100 rounded-pill d-flex align-items-center justify-content-center gap-2 py-2" style="font-size: 0.8rem;" onclick="resetAllData()">
+                    <i class="bi bi-trash"></i> Reset Database
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN WORKSPACE -->
+        <div class="main-workspace">
+            
+            <div class="top-navbar px-4 py-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <h5 class="mb-0 fw-bold text-dark" id="current-table-title">Tabel: -</h5>
+                    <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle px-3 py-1" id="table-row-count-badge">0 Rows</span>
+                </div>
+
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 fs-8 d-none d-md-inline-flex align-items-center gap-1" id="auto-save-status" title="Otomatis tersimpan ke browser cache">
+                        <i class="bi bi-cloud-check-fill"></i> Auto-saved
+                    </span>
+                    <input type="file" id="import-json-file-input" accept=".json" class="d-none" onchange="handleImportJSON(event)">
+                    <button class="btn btn-sm btn-outline-primary rounded-3 d-flex align-items-center gap-1 px-3" onclick="triggerImportJSON()" title="Import File JSON Backup">
+                        <i class="bi bi-upload"></i> Import JSON
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary rounded-3 d-flex align-items-center gap-1 px-3" onclick="exportJSONSchema()" title="Backup ke JSON">
+                        <i class="bi bi-download"></i> Export JSON
+                    </button>
+                    <button class="btn btn-sm btn-md-contained d-flex align-items-center gap-2 px-3" onclick="generateAndShowSQL()">
+                        <i class="bi bi-play-circle-fill fs-6"></i> Generate SQL
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <ul class="nav nav-tabs px-4 pt-2 bg-white" id="workspaceTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="columns-tab" data-bs-toggle="tab" data-bs-target="#tab-columns" type="button" role="tab">
+                        <i class="bi bi-list-nested me-1"></i> Structure (Columns)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="data-tab" data-bs-toggle="tab" data-bs-target="#tab-data" type="button" role="tab">
+                        <i class="bi bi-grid-3x3-gap-fill me-1"></i> Data Records & Bulk Fill
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="erd-tab" data-bs-toggle="tab" data-bs-target="#tab-erd" type="button" role="tab" onclick="renderD3ERD()">
+                        <i class="bi bi-diagram-3-fill me-1"></i> ERD Visualizer (D3.js)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="sql-tab" data-bs-toggle="tab" data-bs-target="#tab-sql" type="button" role="tab" onclick="updateSQLPreview()">
+                        <i class="bi bi-code-square me-1"></i> Live SQL Preview
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content p-4 flex-grow-1 overflow-y-auto">
+                
+                <!-- TAB 1: COLUMN STRUCTURE -->
+                <div class="tab-pane fade show active" id="tab-columns" role="tabpanel">
+                    <div class="card card-custom p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-list-columns me-1"></i> Kolom & Tipe Data</h6>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-primary rounded-3" onclick="addColumnRow()">
+                                    <i class="bi bi-plus-circle me-1"></i> Tambah Kolom
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="addStandardIDColumn()">
+                                    <i class="bi bi-key me-1"></i> Add Primary Key (id)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-grid align-middle" id="columns-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 200px;">Nama Kolom</th>
+                                        <th style="width: 160px;">Tipe Data</th>
+                                        <th style="width: 100px;">Panjang/Nilai</th>
+                                        <th style="width: 70px;" class="text-center">PK</th>
+                                        <th style="width: 70px;" class="text-center">A.I</th>
+                                        <th style="width: 70px;" class="text-center">NOT NULL</th>
+                                        <th style="width: 150px;">Default</th>
+                                        <th style="width: 80px;" class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="columns-table-body">
+                                    <!-- Dynamic Column Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: DATA RECORDS & BULK FILL -->
+                <div class="tab-pane fade" id="tab-data" role="tabpanel">
+                    <div class="card card-custom p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                            <div>
+                                <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-node-plus me-1"></i> Isi Data Manual / Generate Banyak Data</h6>
+                                <small class="text-muted">Isi baris secara langsung atau gunakan fitur Smart Bulk Fill otomatis.</small>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-success text-white fw-medium rounded-3" onclick="openBulkFillModal()">
+                                    <i class="bi bi-lightning-charge-fill me-1"></i> Smart Bulk Fill Generator
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary rounded-3" onclick="addDataRow()">
+                                    <i class="bi bi-plus-lg me-1"></i> Tambah Baris Manual
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger rounded-3" onclick="clearAllRows()">
+                                    <i class="bi bi-eraser me-1"></i> Kosongkan Records
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+                            <table class="table table-bordered table-hover table-grid align-middle" id="data-table">
+                                <thead class="table-light sticky-top" id="data-table-head">
+                                    <!-- Headers populated from Columns -->
+                                </thead>
+                                <tbody id="data-table-body">
+                                    <!-- Dynamic Row Editors -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: D3.JS ERD VISUALIZER -->
+                <div class="tab-pane fade" id="tab-erd" role="tabpanel">
+                    <div class="card card-custom p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-diagram-3 me-1"></i> Visualisasi Skema Database (D3.js)</h6>
+                            <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="renderD3ERD()">
+                                <i class="bi bi-arrow-clockwise me-1"></i> Redraw Diagram
+                            </button>
+                        </div>
+                        <p class="text-muted fs-7 mb-3">Klik dan seret (drag) node tabel untuk memindahkan posisi diagram visual.</p>
+                        <div id="erd-canvas"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: SQL GENERATOR & CODE PREVIEW -->
+                <div class="tab-pane fade" id="tab-sql" role="tabpanel">
+                    <div class="card card-custom p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                            <div class="d-flex align-items-center gap-3">
+                                <label class="fw-bold text-secondary mb-0"><i class="bi bi-sliders me-1"></i> Dialek SQL:</label>
+                                <select class="form-select form-select-sm w-auto rounded-3" id="sql-dialect-select" onchange="updateSQLPreview()">
+                                    <option value="mysql" selected>MySQL / MariaDB</option>
+                                    <option value="postgresql">PostgreSQL</option>
+                                    <option value="sqlite">SQLite</option>
+                                    <option value="mssql">MS SQL Server</option>
+                                </select>
+                            </div>
+
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="form-check form-switch me-2">
+                                    <input class="form-check-input" type="checkbox" id="sql-include-drop" checked onchange="updateSQLPreview()">
+                                    <label class="form-check-label fs-7" for="sql-include-drop">DROP TABLE</label>
+                                </div>
+                                <div class="form-check form-switch me-2">
+                                    <input class="form-check-input" type="checkbox" id="sql-include-insert" checked onchange="updateSQLPreview()">
+                                    <label class="form-check-label fs-7" for="sql-include-insert">INSERT Data</label>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary rounded-3" onclick="copySQLToClipboard()">
+                                    <i class="bi bi-clipboard me-1"></i> Salin SQL
+                                </button>
+                                <button class="btn btn-sm btn-success rounded-3" onclick="downloadSQLFile()">
+                                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Download .sql
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="sql-output-box" id="sql-code-output">-- SQL Query akan muncul di sini...</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+    <script>
+        // DATA STRUCTURE & STATE
+        let databaseState = {
+            activeTableIndex: 0,
+            tables: []
+        };
+
+        const STORAGE_KEY = "SQL_FILLER_CACHE_V1";
+
+        const DATA_TYPES = [
+            "INT", "BIGINT", "VARCHAR", "TEXT", "DECIMAL", 
+            "DATETIME", "DATE", "BOOLEAN", "ENUM"
+        ];
+
+        // MOCK DATA DICTIONARY FOR BULK GENERATION
+        const MOCK_NAMES = ["Budi Santoso", "Siti Rahma", "Eko Prasetyo", "Dewi Lestari", "Agus Wijaya", "Rina Permata", "Ahmad Fauzi", "Nani Wijaya", "Rizky Ramadhan", "Maya Putri"];
+        const MOCK_CITIES = ["Jakarta", "Surabaya", "Bandung", "Medan", "Semarang", "Yogyakarta", "Depok", "Bali", "Makassar", "Palembang"];
+        const MOCK_DOMAINS = ["gmail.com", "yahoo.com", "company.id", "outlook.com", "tech.co.id"];
+        const MOCK_PRODUCTS = ["Laptop Pro 15", "Wireless Mouse", "Mechanical Keyboard", "Monitor 27 Inch", "USB-C Hub", "Headset Gaming", "Webcam HD", "Desk Mat XL"];
+
+        window.onload = function() {
+            const cachedData = localStorage.getItem(STORAGE_KEY);
+            if (cachedData) {
+                try {
+                    const parsed = JSON.parse(cachedData);
+                    if (parsed && Array.isArray(parsed.tables)) {
+                        databaseState = parsed;
+                        if (typeof databaseState.activeTableIndex !== 'number' || databaseState.activeTableIndex >= databaseState.tables.length) {
+                            databaseState.activeTableIndex = Math.max(0, databaseState.tables.length - 1);
+                        }
+                        renderAllUI();
+                        return;
+                    }
+                } catch (e) {
+                    console.error("Cache tidak valid, memuat sampel default.", e);
+                }
+            }
+            loadSampleSchema();
+        };
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(databaseState));
+                const statusBadge = document.getElementById("auto-save-status");
+                if (statusBadge) {
+                    statusBadge.classList.remove("d-none");
+                    statusBadge.style.opacity = "1";
+                }
+            } catch (e) {
+                console.error("Gagal menyimpan ke LocalStorage:", e);
+            }
+        }
+
+        function loadSampleSchema() {
+            databaseState.tables = [
+                {
+                    name: "users",
+                    columns: [
+                        { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
+                        { name: "nama_lengkap", type: "VARCHAR", length: "100", pk: false, ai: false, notNull: true, defaultValue: "" },
+                        { name: "email", type: "VARCHAR", length: "100", pk: false, ai: false, notNull: true, defaultValue: "" },
+                        { name: "kota", type: "VARCHAR", length: "50", pk: false, ai: false, notNull: false, defaultValue: "Jakarta" },
+                        { name: "created_at", type: "DATETIME", length: "", pk: false, ai: false, notNull: true, defaultValue: "CURRENT_TIMESTAMP" }
+                    ],
+                    rows: [
+                        { id: 1, nama_lengkap: "Budi Santoso", email: "budi@gmail.com", kota: "Jakarta", created_at: "2026-01-10 09:00:00" },
+                        { id: 2, nama_lengkap: "Siti Rahma", email: "siti@yahoo.com", kota: "Bandung", created_at: "2026-02-14 14:30:00" },
+                        { id: 3, nama_lengkap: "Eko Prasetyo", email: "eko@company.id", kota: "Surabaya", created_at: "2026-03-01 11:15:00" }
+                    ]
+                },
+                {
+                    name: "products",
+                    columns: [
+                        { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
+                        { name: "nama_produk", type: "VARCHAR", length: "150", pk: false, ai: false, notNull: true, defaultValue: "" },
+                        { name: "harga", type: "DECIMAL", length: "10,2", pk: false, ai: false, notNull: true, defaultValue: "0" },
+                        { name: "stok", type: "INT", length: "6", pk: false, ai: false, notNull: true, defaultValue: "10" }
+                    ],
+                    rows: [
+                        { id: 1, nama_produk: "Laptop Pro 15", harga: "15000000", stok: "25" },
+                        { id: 2, nama_produk: "Wireless Mouse", harga: "250000", stok: "100" }
+                    ]
+                }
+            ];
+            databaseState.activeTableIndex = 0;
+            saveToLocalStorage();
+            renderAllUI();
+            
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'SQL FILLER: Sample Schema Dimuat',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+        function renderAllUI() {
+            renderSidebarTables();
+            renderColumnsTable();
+            renderDataGrid();
+            updateHeaderTitle();
+            updateSQLPreview();
+        }
+
+        function updateHeaderTitle() {
+            const currentTable = getCurrentTable();
+            if (currentTable) {
+                document.getElementById("current-table-title").innerText = `Tabel: ${currentTable.name}`;
+                document.getElementById("table-row-count-badge").innerText = `${currentTable.rows.length} Record(s)`;
+            } else {
+                document.getElementById("current-table-title").innerText = "Belum Ada Tabel";
+                document.getElementById("table-row-count-badge").innerText = "0 Rows";
+            }
+        }
+
+        function getCurrentTable() {
+            if (databaseState.tables.length === 0) return null;
+            return databaseState.tables[databaseState.activeTableIndex];
+        }
+
+        function renderSidebarTables() {
+            const container = document.getElementById("tables-list-container");
+            container.innerHTML = "";
+
+            databaseState.tables.forEach((tbl, idx) => {
+                const isActive = idx === databaseState.activeTableIndex;
+                const div = document.createElement("div");
+                div.className = `table-list-item ${isActive ? 'active' : ''}`;
+                div.onclick = () => {
+                    databaseState.activeTableIndex = idx;
+                    renderAllUI();
+                };
+
+                div.innerHTML = `
+                    <div class="d-flex align-items-center gap-2 text-truncate">
+                        <i class="bi bi-table"></i>
+                        <span class="text-truncate">${tbl.name}</span>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center" onclick="event.stopPropagation();">
+                        <i class="bi bi-pencil-square hover-icon text-white-50" title="Ubah Nama" onclick="renameTablePrompt(${idx})"></i>
+                        <i class="bi bi-trash hover-icon text-danger-subtle" title="Hapus" onclick="deleteTablePrompt(${idx})"></i>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function addNewTablePrompt() {
+            Swal.fire({
+                title: 'Tambah Tabel Baru',
+                input: 'text',
+                inputLabel: 'Nama Tabel (contoh: orders, customers)',
+                inputPlaceholder: 'nama_tabel',
+                showCancelButton: true,
+                confirmButtonText: 'Buat Tabel',
+                cancelButtonText: 'Batal',
+                inputValidator: (value) => {
+                    if (!value || !value.trim()) {
+                        return 'Nama tabel tidak boleh kosong!';
+                    }
+                    if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(value.trim())) {
+                        return 'Gunakan format nama yang valid (tanpa spasi/karakter khusus)';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const tableName = result.value.trim().toLowerCase();
+                    databaseState.tables.push({
+                        name: tableName,
+                        columns: [
+                            { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" }
+                        ],
+                        rows: []
+                    });
+                    databaseState.activeTableIndex = databaseState.tables.length - 1;
+                    saveToLocalStorage();
+                    renderAllUI();
+                    Swal.fire('Tabel Dibuat!', `Tabel '${tableName}' berhasil ditambahkan.`, 'success');
+                }
+            });
+        }
+
+        function renameTablePrompt(idx) {
+            const tbl = databaseState.tables[idx];
+            Swal.fire({
+                title: 'Ubah Nama Tabel',
+                input: 'text',
+                inputValue: tbl.name,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed && result.value.trim()) {
+                    tbl.name = result.value.trim().toLowerCase();
+                    saveToLocalStorage();
+                    renderAllUI();
+                }
+            });
+        }
+
+        function deleteTablePrompt(idx) {
+            const tbl = databaseState.tables[idx];
+            Swal.fire({
+                title: 'Hapus Tabel?',
+                text: `Apakah Anda yakin ingin menghapus tabel '${tbl.name}'?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    databaseState.tables.splice(idx, 1);
+                    databaseState.activeTableIndex = Math.max(0, databaseState.activeTableIndex - 1);
+                    saveToLocalStorage();
+                    renderAllUI();
+                    Swal.fire('Terhapus!', 'Tabel berhasil dihapus.', 'success');
+                }
+            });
+        }
+
+        function resetAllData() {
+            Swal.fire({
+                title: 'Reset Seluruh Database?',
+                text: 'Semua tabel dan data akan dihapus!',
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Ya, Reset Semua'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    databaseState.tables = [];
+                    databaseState.activeTableIndex = 0;
+                    saveToLocalStorage();
+                    renderAllUI();
+                    Swal.fire('Direset', 'Database telah dikosongkan.', 'info');
+                }
+            });
+        }
+
+        function renderColumnsTable() {
+            const tbody = document.getElementById("columns-table-body");
+            tbody.innerHTML = "";
+
+            const table = getCurrentTable();
+            if (!table) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">Pilih atau buat tabel terlebih dahulu.</td></tr>`;
+                return;
+            }
+
+            table.columns.forEach((col, colIdx) => {
+                const tr = document.createElement("tr");
+
+                const typeOptions = DATA_TYPES.map(t => 
+                    `<option value="${t}" ${col.type === t ? 'selected' : ''}>${t}</option>`
+                ).join("");
+
+                tr.innerHTML = `
+                    <td>
+                        <input type="text" class="form-control form-control-sm fw-medium rounded-2" value="${col.name}" 
+                            onchange="updateColumnField(${colIdx}, 'name', this.value)">
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm rounded-2" onchange="updateColumnField(${colIdx}, 'type', this.value)">
+                            ${typeOptions}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm rounded-2" value="${col.length || ''}" placeholder="11 / 255"
+                            onchange="updateColumnField(${colIdx}, 'length', this.value)">
+                    </td>
+                    <td class="text-center">
+                        <input type="checkbox" class="form-check-input" ${col.pk ? 'checked' : ''} 
+                            onchange="updateColumnField(${colIdx}, 'pk', this.checked)">
+                    </td>
+                    <td class="text-center">
+                        <input type="checkbox" class="form-check-input" ${col.ai ? 'checked' : ''} 
+                            onchange="updateColumnField(${colIdx}, 'ai', this.checked)">
+                    </td>
+                    <td class="text-center">
+                        <input type="checkbox" class="form-check-input" ${col.notNull ? 'checked' : ''} 
+                            onchange="updateColumnField(${colIdx}, 'notNull', this.checked)">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm rounded-2" value="${col.defaultValue || ''}" placeholder="NULL / Value"
+                            onchange="updateColumnField(${colIdx}, 'defaultValue', this.value)">
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteColumn(${colIdx})" title="Hapus Kolom">
+                            <i class="bi bi-x-circle-fill fs-6"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateColumnField(colIdx, key, value) {
+            const table = getCurrentTable();
+            if (!table) return;
+
+            const oldName = table.columns[colIdx].name;
+            table.columns[colIdx][key] = value;
+
+            if (key === 'name' && oldName !== value) {
+                table.rows.forEach(r => {
+                    r[value] = r[oldName];
+                    delete r[oldName];
+                });
+                renderDataGrid();
+            }
+
+            saveToLocalStorage();
+            updateSQLPreview();
+        }
+
+        function addColumnRow() {
+            const table = getCurrentTable();
+            if (!table) return;
+
+            const newColName = `col_${table.columns.length + 1}`;
+            table.columns.push({
+                name: newColName,
+                type: "VARCHAR",
+                length: "100",
+                pk: false,
+                ai: false,
+                notNull: false,
+                defaultValue: ""
+            });
+
+            table.rows.forEach(r => r[newColName] = "");
+
+            saveToLocalStorage();
+            renderColumnsTable();
+            renderDataGrid();
+            updateSQLPreview();
+        }
+
+        function addStandardIDColumn() {
+            const table = getCurrentTable();
+            if (!table) return;
+
+            const hasPK = table.columns.some(c => c.pk);
+            if (hasPK) {
+                Swal.fire('Info', 'Tabel ini sudah memiliki Primary Key.', 'info');
+                return;
+            }
+
+            table.columns.unshift({
+                name: "id",
+                type: "INT",
+                length: "11",
+                pk: true,
+                ai: true,
+                notNull: true,
+                defaultValue: ""
+            });
+
+            saveToLocalStorage();
+            renderColumnsTable();
+            renderDataGrid();
+            updateSQLPreview();
+        }
+
+        function deleteColumn(colIdx) {
+            const table = getCurrentTable();
+            if (!table) return;
+
+            const colName = table.columns[colIdx].name;
+            table.columns.splice(colIdx, 1);
+
+            table.rows.forEach(r => delete r[colName]);
+
+            saveToLocalStorage();
+            renderColumnsTable();
+            renderDataGrid();
+            updateSQLPreview();
+        }
+
+        function addStandardIDColumn() {
+            const table = getCurrentTable();
+            if (!table) return;
+
+            const hasPK = table.columns.some(c => c.pk);
+            if (hasPK) {
+                Swal.fire('Info', 'Tabel ini sudah memiliki Primary Key.', 'info');
+                return;
+            }
+
+            table.columns.unshift({
+                name: "id",
+                type: "INT",
+                length: "11",
+                pk: true,
+                ai: true,
+                notNull: true,
+                defaultValue: ""
+            });
+
+            renderColumnsTable();
+            renderDataGrid();
+            updateSQLPreview();
+        }
+
+        function deleteColumn(colIdx) {
+            const table = getCurrentTable();
+            if (!table) return;
+
+            const colName = table.columns[colIdx].name;
+            table.columns.splice(colIdx, 1);
+
+            table.rows.forEach(r => delete r[colName]);
+
+            renderColumnsTable();
+            renderDataGrid();
+            updateSQLPreview();
+        }
+
+        function renderDataGrid() {
+            const thead = document.getElementById("data-table-head");
+            const tbody = document.getElementById("data-table-body");
+            thead.innerHTML = "";
+            tbody.innerHTML = "";
+
+            const table = getCurrentTable();
+            if (!table || table.columns.length === 0) {
+                tbody.innerHTML = `<tr><td class="text-center text-muted py-4">Belum ada kolom. Tambahkan kolom terlebih dahulu di tab Structure.</td></tr>`;
+                return;
+            }
+
+            let headerHTML = "<tr><th style='width: 50px;' class='text-center'>#</th>";
+            table.columns.forEach(col => {
+                headerHTML += `
+                    <th>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span>${col.name} ${col.pk ? '<i class="bi bi-key-fill text-warning ms-1" title="Primary Key"></i>' : ''}</span>
+                            <span class="badge bg-secondary-subtle text-secondary font-monospace fw-normal fs-8">${col.type}</span>
+                        </div>
+                    </th>
+                `;
+            });
+            headerHTML += "<th style='width: 60px;' class='text-center'>Aksi</th></tr>";
+            thead.innerHTML = headerHTML;
+
+            if (table.rows.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${table.columns.length + 2}" class="text-center text-muted py-4">Belum ada data. Gunakan tombol 'Tambah Baris' atau 'Smart Bulk Fill Generator'.</td></tr>`;
+                return;
+            }
+
+            table.rows.forEach((row, rowIdx) => {
+                const tr = document.createElement("tr");
+                let rowHTML = `<td class="text-center fw-bold text-muted">${rowIdx + 1}</td>`;
+
+                table.columns.forEach(col => {
+                    const cellVal = row[col.name] !== undefined ? row[col.name] : "";
+                    rowHTML += `
+                        <td>
+                            <input type="text" class="form-control form-control-sm border-0 bg-transparent" value="${cellVal}"
+                                onchange="updateRowCellValue(${rowIdx}, '${col.name}', this.value)">
+                        </td>
+                    `;
+                });
+
+                rowHTML += `
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteDataRow(${rowIdx})" title="Hapus Baris">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tr.innerHTML = rowHTML;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateRowCellValue(rowIdx, colName, value) {
+            const table = getCurrentTable();
+            if (table && table.rows[rowIdx]) {
+                table.rows[rowIdx][colName] = value;
+                saveToLocalStorage();
+                updateSQLPreview();
+            }
+        }
+
+        function addDataRow() {
+            const table = getCurrentTable();
+            if (!table) return;
+
+            const newRow = {};
+            table.columns.forEach(col => {
+                if (col.ai) {
+                    const existingMax = table.rows.reduce((max, r) => Math.max(max, parseInt(r[col.name]) || 0), 0);
+                    newRow[col.name] = existingMax + 1;
+                } else if (col.defaultValue) {
+                    newRow[col.name] = col.defaultValue;
+                } else {
+                    newRow[col.name] = "";
+                }
+            });
+
+            table.rows.push(newRow);
+            saveToLocalStorage();
+            renderDataGrid();
+            updateHeaderTitle();
+            updateSQLPreview();
+        }
+
+        function deleteDataRow(rowIdx) {
+            const table = getCurrentTable();
+            if (!table) return;
+
+            table.rows.splice(rowIdx, 1);
+            saveToLocalStorage();
+            renderDataGrid();
+            updateHeaderTitle();
+            updateSQLPreview();
+        }
+
+        function clearAllRows() {
+            const table = getCurrentTable();
+            if (!table) return;
+
+            Swal.fire({
+                title: 'Kosongkan Semua Record?',
+                text: `Hapus seluruh ${table.rows.length} baris data di tabel '${table.name}'?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Ya, Kosongkan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    table.rows = [];
+                    saveToLocalStorage();
+                    renderDataGrid();
+                    updateHeaderTitle();
+                    updateSQLPreview();
+                }
+            });
+        }
+
+<!-- ... existing code ... @@
+        function executeBulkFill(count, isAppend) {
+            const table = getCurrentTable();
+            if (!table) return;
+
+            if (!isAppend) {
+                table.rows = [];
+            }
+
+            let startAutoId = table.rows.length + 1;
+
+            for (let i = 0; i < count; i++) {
+                const row = {};
+                table.columns.forEach(col => {
+                    row[col.name] = generateSmartColumnValue(col, startAutoId + i);
+                });
+                table.rows.push(row);
+            }
+
+            saveToLocalStorage();
+            renderDataGrid();
+            updateHeaderTitle();
+            updateSQLPreview();
+
+            Swal.fire('Berhasil!', `${count} baris data berhasil dibuat otomatis oleh SQL FILLER.`, 'success');
+        }
+
+        function generateSmartColumnValue(col, currentId) {
+            const colName = col.name.toLowerCase();
+            const colType = col.type.toUpperCase();
+
+            if (col.ai) {
+                return currentId;
+            }
+
+            if (colName.includes('nama') || colName.includes('name')) {
+                return getRandomElement(MOCK_NAMES);
+            }
+            if (colName.includes('email')) {
+                const nameSlug = getRandomElement(MOCK_NAMES).toLowerCase().replace(/\s+/g, '.');
+                return `${nameSlug}${Math.floor(Math.random()*90 + 10)}@${getRandomElement(MOCK_DOMAINS)}`;
+            }
+            if (colName.includes('kota') || colName.includes('city') || colName.includes('alamat')) {
+                return getRandomElement(MOCK_CITIES);
+            }
+            if (colName.includes('produk') || colName.includes('product') || colName.includes('item')) {
+                return getRandomElement(MOCK_PRODUCTS);
+            }
+            if (colName.includes('harga') || colName.includes('price') || colName.includes('total')) {
+                return Math.floor(Math.random() * 500 + 10) * 1000;
+            }
+            if (colName.includes('stok') || colName.includes('qty') || colName.includes('quantity')) {
+                return Math.floor(Math.random() * 90 + 10);
+            }
+
+            switch (colType) {
+                case 'INT':
+                case 'BIGINT':
+                    return Math.floor(Math.random() * 1000 + 1);
+                case 'DECIMAL':
+                    return (Math.random() * 1000).toFixed(2);
+                case 'DATETIME':
+                    const randomDate = new Date(Date.now() - Math.floor(Math.random() * 10000000000));
+                    return randomDate.toISOString().slice(0, 19).replace('T', ' ');
+                case 'DATE':
+                    const d = new Date(Date.now() - Math.floor(Math.random() * 10000000000));
+                    return d.toISOString().slice(0, 10);
+                case 'BOOLEAN':
+                    return Math.random() > 0.5 ? "1" : "0";
+                case 'TEXT':
+                case 'VARCHAR':
+                default:
+                    return `Sample ${col.name} #${Math.floor(Math.random() * 899 + 100)}`;
+            }
+        }
+
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function renderD3ERD() {
+            const container = document.getElementById("erd-canvas");
+            container.innerHTML = "";
+
+            if (databaseState.tables.length === 0) {
+                container.innerHTML = `<div class="text-center text-muted pt-5">Tidak ada tabel untuk ditampilkan pada ERD.</div>`;
+                return;
+            }
+
+            const width = container.clientWidth || 800;
+            const height = 550;
+
+            const svg = d3.select("#erd-canvas")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .call(d3.zoom().on("zoom", (event) => {
+                    g.attr("transform", event.transform);
+                }))
+                .append("g");
+
+            const g = svg.append("g");
+
+            const nodes = databaseState.tables.map((t, idx) => {
+                const colHeight = 24;
+                const cardHeight = 35 + (t.columns.length * colHeight);
+                return {
+                    id: t.name,
+                    title: t.name,
+                    columns: t.columns,
+                    width: 220,
+                    height: cardHeight,
+                    x: 60 + (idx % 3) * 260,
+                    y: 50 + Math.floor(idx / 3) * 220
+                };
+            });
+
+            const nodeGroups = g.selectAll(".node")
+                .data(nodes)
+                .enter()
+                .append("g")
+                .attr("class", "node")
+                .attr("transform", d => `translate(${d.x}, ${d.y})`)
+                .call(d3.drag()
+                    .on("drag", function (event, d) {
+                        d.x += event.dx;
+                        d.y += event.dy;
+                        d3.select(this).attr("transform", `translate(${d.x}, ${d.y})`);
+                    })
+                );
+
+            nodeGroups.append("rect")
+                .attr("class", "d3-table-card")
+                .attr("width", d => d.width)
+                .attr("height", d => d.height);
+
+            nodeGroups.append("rect")
+                .attr("class", "d3-table-header")
+                .attr("width", d => d.width)
+                .attr("height", 30);
+
+            nodeGroups.append("text")
+                .attr("class", "d3-table-title")
+                .attr("x", 12)
+                .attr("y", 20)
+                .text(d => d.title);
+
+            nodeGroups.each(function (d) {
+                const group = d3.select(this);
+                d.columns.forEach((col, i) => {
+                    const yPos = 48 + (i * 22);
+
+                    if (col.pk) {
+                        group.append("text")
+                            .attr("class", "d3-pk-badge")
+                            .attr("x", 10)
+                            .attr("y", yPos)
+                            .text("PK");
+                    }
+
+                    group.append("text")
+                        .attr("class", "d3-column-text")
+                        .attr("x", col.pk ? 32 : 12)
+                        .attr("y", yPos)
+                        .text(`${col.name}: ${col.type}${col.length ? '(' + col.length + ')' : ''}`);
+                });
+            });
+        }
+
+        function updateSQLPreview() {
+            const dialect = document.getElementById("sql-dialect-select").value;
+            const includeDrop = document.getElementById("sql-include-drop").checked;
+            const includeInsert = document.getElementById("sql-include-insert").checked;
+
+            let sqlScript = `-- Generated by SQL FILLER - Database & Schema Generator\n`;
+            sqlScript += `-- Timestamp: ${new Date().toLocaleString()}\n`;
+            sqlScript += `-- Target Dialect: ${dialect.toUpperCase()}\n\n`;
+
+            databaseState.tables.forEach(table => {
+                if (includeDrop) {
+                    sqlScript += `DROP TABLE IF EXISTS ${quoteIdentifier(table.name, dialect)};\n`;
+                }
+
+                sqlScript += `CREATE TABLE ${quoteIdentifier(table.name, dialect)} (\n`;
+                
+                const colDefs = [];
+                const pkCols = [];
+
+                table.columns.forEach(col => {
+                    let def = `  ${quoteIdentifier(col.name, dialect)} ${formatDataType(col, dialect)}`;
+
+                    if (col.notNull) def += " NOT NULL";
+                    
+                    if (col.ai) {
+                        if (dialect === 'mysql') def += " AUTO_INCREMENT";
+                        else if (dialect === 'postgresql') def = `  ${quoteIdentifier(col.name, dialect)} SERIAL`;
+                        else if (dialect === 'mssql') def += " IDENTITY(1,1)";
+                        else if (dialect === 'sqlite') def += " AUTOINCREMENT";
+                    }
+
+                    if (col.defaultValue && !col.ai) {
+                        def += ` DEFAULT '${col.defaultValue}'`;
+                    }
+
+                    if (col.pk && dialect !== 'sqlite') {
+                        pkCols.push(quoteIdentifier(col.name, dialect));
+                    }
+
+                    colDefs.push(def);
+                });
+
+                if (pkCols.length > 0) {
+                    colDefs.push(`  PRIMARY KEY (${pkCols.join(', ')})`);
+                }
+
+                sqlScript += colDefs.join(",\n");
+                sqlScript += `\n);\n\n`;
+
+                if (includeInsert && table.rows.length > 0 && table.columns.length > 0) {
+                    sqlScript += `-- Records for '${table.name}' (${table.rows.length} rows)\n`;
+                    
+                    const colNames = table.columns.map(c => quoteIdentifier(c.name, dialect)).join(", ");
+                    
+                    table.rows.forEach(row => {
+                        const values = table.columns.map(c => {
+                            const val = row[c.name];
+                            if (val === undefined || val === null || val === "") return "NULL";
+                            if (!isNaN(val) && c.type !== "VARCHAR" && c.type !== "TEXT") return val;
+                            return `'${String(val).replace(/'/g, "''")}'`;
+                        }).join(", ");
+
+                        sqlScript += `INSERT INTO ${quoteIdentifier(table.name, dialect)} (${colNames}) VALUES (${values});\n`;
+                    });
+
+                    sqlScript += `\n`;
+                }
+            });
+
+            document.getElementById("sql-code-output").innerText = sqlScript;
+        }
+
+        function quoteIdentifier(name, dialect) {
+            switch (dialect) {
+                case 'mysql': return `\`${name}\``;
+                case 'postgresql': return `"${name}"`;
+                case 'mssql': return `[${name}]`;
+                case 'sqlite':
+                default: return `\`${name}\``;
+            }
+        }
+
+        function formatDataType(col, dialect) {
+            let type = col.type.toUpperCase();
+            if (col.length && !['DATETIME', 'DATE', 'BOOLEAN'].includes(type)) {
+                return `${type}(${col.length})`;
+            }
+            return type;
+        }
+
+        function generateAndShowSQL() {
+            const triggerTab = new bootstrap.Tab(document.getElementById('sql-tab'));
+            triggerTab.show();
+            updateSQLPreview();
+        }
+
+        function copySQLToClipboard() {
+            const codeText = document.getElementById("sql-code-output").innerText;
+            
+            const tempArea = document.createElement("textarea");
+            tempArea.value = codeText;
+            document.body.appendChild(tempArea);
+            tempArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempArea);
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'SQL berhasil disalin ke clipboard!',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+        function downloadSQLFile() {
+            const codeText = document.getElementById("sql-code-output").innerText;
+            const blob = new Blob([codeText], { type: "text/plain;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `sql_filler_export_${Date.now()}.sql`;
+            link.click();
+        }
+
+        function exportJSONSchema() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(databaseState, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `sql_filler_backup_${Date.now()}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'File backup JSON berhasil diunduh!',
+                showConfirmButton: false,
+                timer: 2500
+            });
+        }
+
+        function triggerImportJSON() {
+            document.getElementById("import-json-file-input").click();
+        }
+
+        function handleImportJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (!importedData || !Array.isArray(importedData.tables)) {
+                        throw new Error("Format file JSON tidak valid. Pastikan file dikeluarkaan dari SQL FILLER.");
+                    }
+
+                    Swal.fire({
+                        title: 'Timpa Database Saat Ini?',
+                        text: `File '${file.name}' berisi ${importedData.tables.length} tabel. Data yang sedang dibuka akan digantikan.`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Import & Timpa',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            databaseState = importedData;
+                            if (typeof databaseState.activeTableIndex !== 'number' || databaseState.activeTableIndex >= databaseState.tables.length) {
+                                databaseState.activeTableIndex = 0;
+                            }
+                            saveToLocalStorage();
+                            renderAllUI();
+                            Swal.fire('Import Berhasil!', `Database berhasil dimuat dari file JSON.`, 'success');
+                        }
+                    });
+                } catch (err) {
+                    Swal.fire('Gagal Import', err.message || 'File JSON rusak atau format tidak sesuai.', 'error');
+                } finally {
+                    event.target.value = "";
+                }
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
