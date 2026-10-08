@@ -27,8 +27,13 @@ $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/\\');
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="<?= e($base) ?>/css/styles.css" rel="stylesheet">
+    <link href="<?= e($base) ?>/css/neobrutal.css" rel="stylesheet">
 </head>
 <body>
+<div class="marquee-strip"><div class="marquee-track">
+    <span>SQL FILLER DBMS ★ IMPORT DATA ★ EXPORT SQL ★ QUERY BUILDER ★ ERD VISUALIZER ★ PWA READY ★ SYNC DB LOCAL ★</span>
+    <span>SQL FILLER DBMS ★ IMPORT DATA ★ EXPORT SQL ★ QUERY BUILDER ★ ERD VISUALIZER ★ PWA READY ★ SYNC DB LOCAL ★</span>
+</div></div>
 <div class="d-flex w-100 overflow-hidden position-relative">
     <?php if ($creds !== null): ?>
     <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleMobileSidebar(false)"></div>
