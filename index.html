@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>SQL FILLER - Multi-Database Studio & PWA</title>
-    
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -15,384 +16,40 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Roboto:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Roboto:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <!-- SweetAlert2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- highlight.js SQL theme -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/192x192/1f5c3.png">
 
     <!-- Dynamic PWA Manifest Generator -->
-    <script>
-        const manifestData = {
-            "name": "SQL FILLER Studio",
-            "short_name": "SQL Filler",
-            "start_url": "./",
-            "display": "standalone",
-            "background_color": "#121824",
-            "theme_color": "#6200ee",
-            "orientation": "portrait-primary",
-            "icons": [
-                {
-                    "src": "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f5c3.png",
-                    "sizes": "72x72",
-                    "type": "image/png"
-                },
-                {
-                    "src": "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/192x192/1f5c3.png",
-                    "sizes": "192x192",
-                    "type": "image/png"
-                },
-                {
-                    "src": "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/512x512/1f5c3.png",
-                    "sizes": "512x512",
-                    "type": "image/png"
-                }
-            ]
-        };
-        const stringManifest = JSON.stringify(manifestData);
-        const blobManifest = new Blob([stringManifest], {type: 'application/json'});
-        const manifestURL = URL.createObjectURL(blobManifest);
-        const linkManifest = document.createElement('link');
-        linkManifest.rel = 'manifest';
-        linkManifest.href = manifestURL;
-        document.head.appendChild(linkManifest);
-    </script>
-    
-    <style>
-        :root {
-            --md-primary: #6200ee;
-            --md-primary-variant: #3700b3;
-            --md-secondary: #03dac6;
-            --md-surface: #ffffff;
-            --md-background: #f4f5f8;
-            --md-error: #b00020;
-            --md-on-primary: #ffffff;
-            --md-on-surface: #121212;
-            --md-drawer-bg: #121824;
-            --md-drawer-text: #e2e8f0;
-            --border-color: #e2e8f0;
-            --editor-bg: #0d1117;
-            --editor-text: #c9d1d9;
-            --bottom-nav-height: 64px;
-        }
+    <script src="js/pwa-manifest.js"></script>
 
-        body {
-            font-family: 'Roboto', 'Inter', sans-serif;
-            background-color: var(--md-background);
-            color: var(--md-on-surface);
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Material Design 2 Sidebar Drawer */
-        .sidebar {
-            width: 300px;
-            background-color: var(--md-drawer-bg);
-            color: var(--md-drawer-text);
-            min-height: 100vh;
-            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.18);
-            z-index: 1020;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .sidebar .brand {
-            padding: 18px 20px 14px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .sidebar .brand-title {
-            font-weight: 700;
-            font-size: 1.25rem;
-            letter-spacing: 0.8px;
-            color: #ffffff;
-            text-transform: uppercase;
-        }
-
-        .drawer-section-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            color: #94a3b8;
-            padding: 12px 20px 6px 20px;
-        }
-
-        /* Database Tree Selection */
-        .db-select-box {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            color: #ffffff;
-            padding: 8px 12px;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .db-select-box:hover {
-            background: rgba(255, 255, 255, 0.12);
-        }
-
-        /* MD2 Navigation Items */
-        .table-list-item {
-            cursor: pointer;
-            border-radius: 28px;
-            padding: 8px 16px;
-            margin: 3px 12px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: #cbd5e1;
-            font-size: 0.86rem;
-            font-weight: 500;
-        }
-
-        .table-list-item:hover {
-            background-color: rgba(255, 255, 255, 0.08);
-            color: #ffffff;
-        }
-
-        .table-list-item.active {
-            background-color: var(--md-primary);
-            color: #ffffff;
-            font-weight: 600;
-            box-shadow: 0 3px 8px rgba(98, 0, 238, 0.4);
-        }
-
-        .hover-icon {
-            opacity: 0.6;
-            transition: opacity 0.2s, transform 0.2s;
-        }
-
-        .hover-icon:hover {
-            opacity: 1;
-            transform: scale(1.18);
-        }
-
-        /* Workspace & App Containers */
-        .main-workspace {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow-y: auto;
-            padding-bottom: 0px;
-        }
-
-        .top-navbar {
-            background-color: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .card-custom {
-            border: none;
-            border-radius: 14px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-            background: #ffffff;
-        }
-
-        .btn-md-contained {
-            background-color: var(--md-primary);
-            color: var(--md-on-primary);
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            font-size: 0.78rem;
-            padding: 8px 16px;
-            box-shadow: 0 2px 4px rgba(98, 0, 238, 0.25);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .btn-md-contained:hover, .btn-md-contained:focus {
-            background-color: var(--md-primary-variant);
-            box-shadow: 0 4px 10px rgba(98, 0, 238, 0.35);
-            color: #ffffff;
-        }
-
-        .btn-md-outlined {
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: #ffffff;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            padding: 5px 12px;
-            transition: all 0.2s ease;
-        }
-
-        .table-grid {
-            font-size: 0.85rem;
-        }
-
-        .table-grid th {
-            background-color: #f8fafc;
-            color: #475569;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 0.6px;
-            vertical-align: middle;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .sql-output-box {
-            background-color: var(--editor-bg);
-            color: var(--editor-text);
-            font-family: 'Fira Code', monospace;
-            border-radius: 10px;
-            padding: 16px;
-            font-size: 0.85rem;
-            line-height: 1.6;
-            max-height: 500px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            border: 1px solid #30363d;
-        }
-
-        #erd-canvas {
-            width: 100%;
-            height: 500px;
-            background-color: #0f172a;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            cursor: grab;
-            position: relative;
-        }
-
-        #erd-canvas:active {
-            cursor: grabbing;
-        }
-
-        .erd-tooltip {
-            position: absolute;
-            display: none;
-            background: rgba(15, 23, 42, 0.92);
-            color: #ffffff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.78rem;
-            pointer-events: none;
-            z-index: 100;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(6px);
-            transition: opacity 0.15s ease;
-        }
-
-        /* Mobile Bottom Navigation Bar Styles */
-        .mobile-bottom-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: var(--bottom-nav-height);
-            background-color: #ffffff;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1030;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .mobile-nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #64748b;
-            font-size: 0.68rem;
-            font-weight: 500;
-            text-decoration: none;
-            padding: 4px 0;
-            transition: all 0.2s ease;
-            border: none;
-            background: transparent;
-        }
-
-        .mobile-nav-item i {
-            font-size: 1.25rem;
-            margin-bottom: 2px;
-        }
-
-        .mobile-nav-item.active {
-            color: var(--md-primary);
-            font-weight: 700;
-        }
-
-        .mobile-nav-item.active i {
-            transform: translateY(-2px);
-        }
-
-        /* Mobile Adjustments & Responsive Rules */
-        @media (max-width: 991.98px) {
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                bottom: 0;
-                transform: translateX(-100%);
-            }
-            .sidebar.show-mobile {
-                transform: translateX(0);
-            }
-            .sidebar-backdrop {
-                display: none;
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 1015;
-            }
-            .sidebar-backdrop.show {
-                display: block;
-            }
-            .main-workspace {
-                padding-bottom: var(--bottom-nav-height);
-            }
-            .desktop-tabs {
-                display: none !important;
-            }
-            .mobile-bottom-nav {
-                display: flex;
-            }
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.03);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(0,0,0,0.18);
-            border-radius: 4px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
 
     <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleMobileSidebar(false)"></div>
 
     <div class="d-flex w-100 overflow-hidden position-relative">
-        
+
         <!-- SIDEBAR: Material Design 2 Drawer with Multi-DB Hierarchy -->
         <div class="sidebar" id="app-sidebar">
             <div class="brand d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">
-                    <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: linear-gradient(135deg, #6200ee, #bb86fc);">
+                    <div class="rounded-circle p-2 d-flex align-items-center justify-content-center"
+                        style="width: 38px; height: 38px; background: linear-gradient(135deg, #6200ee, #bb86fc);">
                         <i class="bi bi-database-fill-gear text-white fs-5"></i>
                     </div>
                     <div>
                         <div class="brand-title lh-1">SQL FILLER</div>
-                        <small class="text-white-50 fw-normal" style="font-size: 0.68rem;">Studio & PWA Mobile</small>
+                        <small class="text-white-50 fw-normal" style="font-size: 0.68rem;">SQL CRAFTER</small>
+                        <div><span class="badge rounded-pill bg-warning text-dark mt-1" style="font-size: 0.6rem;" title="Sinkronisasi ke database lokal sungguhan akan segera hadir">UNDER DEVELOPMENT</span></div>
                     </div>
                 </div>
                 <button class="btn btn-sm text-white-50 d-lg-none" onclick="toggleMobileSidebar(false)">
@@ -404,12 +61,14 @@
             <div class="p-3 border-bottom border-secondary border-opacity-25">
                 <div class="d-flex align-items-center justify-content-between mb-2">
                     <span class="drawer-section-label p-0">Active Database</span>
-                    <button class="btn btn-sm btn-md-outlined py-0 px-2" onclick="promptCreateDatabase()" title="Tambah Database Baru">
+                    <button class="btn btn-sm btn-md-outlined py-0 px-2" onclick="promptCreateDatabase()"
+                        title="Tambah Database Baru">
                         <i class="bi bi-plus-lg"></i> DB Baru
                     </button>
                 </div>
-                
-                <div class="db-select-box d-flex align-items-center justify-content-between" onclick="promptSelectDatabase()">
+
+                <div class="db-select-box d-flex align-items-center justify-content-between"
+                    onclick="promptSelectDatabase()">
                     <div class="d-flex align-items-center gap-2 text-truncate">
                         <i class="bi bi-database text-warning"></i>
                         <span class="fw-bold text-truncate" id="active-db-name-label">db_default</span>
@@ -421,7 +80,8 @@
             <!-- Tables List Section -->
             <div class="d-flex align-items-center justify-content-between drawer-section-label">
                 <span>Tabel Database</span>
-                <button class="btn btn-sm btn-md-outlined py-0 px-2 d-flex align-items-center gap-1" onclick="addNewTablePrompt()" title="Tambah Tabel Baru">
+                <button class="btn btn-sm btn-md-outlined py-0 px-2 d-flex align-items-center gap-1"
+                    onclick="addNewTablePrompt()" title="Tambah Tabel Baru">
                     <i class="bi bi-plus-lg"></i> Tabel Baru
                 </button>
             </div>
@@ -433,16 +93,24 @@
 
             <!-- Global Actions & PWA Install Button -->
             <div class="p-3 border-top border-secondary border-opacity-25 mt-auto">
-                <button id="pwa-install-btn" class="btn btn-sm btn-outline-info w-100 mb-2 rounded-pill d-none align-items-center justify-content-center gap-2 py-2" onclick="installPWAApp()">
+                <button id="pwa-install-btn"
+                    class="btn btn-sm btn-outline-info w-100 mb-2 rounded-pill d-none align-items-center justify-content-center gap-2 py-2"
+                    onclick="installPWAApp()">
                     <i class="bi bi-download"></i> Install Application (PWA)
                 </button>
-                <button class="btn btn-sm btn-outline-warning w-100 mb-2 rounded-pill d-flex align-items-center justify-content-center gap-2 py-2" style="font-size: 0.78rem;" onclick="loadSampleSchema()">
+                <button
+                    class="btn btn-sm btn-outline-warning w-100 mb-2 rounded-pill d-flex align-items-center justify-content-center gap-2 py-2"
+                    style="font-size: 0.78rem;" onclick="loadSampleSchema()">
                     <i class="bi bi-magic"></i> Load Sample Multi-DB
                 </button>
-                <button class="btn btn-sm btn-outline-info w-100 mb-2 rounded-pill d-flex align-items-center justify-content-center gap-2 py-2" style="font-size: 0.78rem;" onclick="loadKafeinartsProducts()">
+                <button
+                    class="btn btn-sm btn-outline-info w-100 mb-2 rounded-pill d-flex align-items-center justify-content-center gap-2 py-2"
+                    style="font-size: 0.78rem;" onclick="loadKafeinartsProducts()">
                     <i class="bi bi-bag-check"></i> Load Kafeinarts Products
                 </button>
-                <button class="btn btn-sm btn-outline-danger w-100 rounded-pill d-flex align-items-center justify-content-center gap-2 py-2" style="font-size: 0.78rem;" onclick="resetAllData()">
+                <button
+                    class="btn btn-sm btn-outline-danger w-100 rounded-pill d-flex align-items-center justify-content-center gap-2 py-2"
+                    style="font-size: 0.78rem;" onclick="resetAllData()">
                     <i class="bi bi-trash"></i> Reset All Databases
                 </button>
             </div>
@@ -450,7 +118,7 @@
 
         <!-- MAIN WORKSPACE -->
         <div class="main-workspace">
-            
+
             <!-- Top Navbar Bar -->
             <div class="top-navbar px-3 px-md-4 py-2 py-md-3 d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-2 gap-md-3">
@@ -459,29 +127,50 @@
                     </button>
                     <div>
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace" id="header-db-badge">DB: db_default</span>
-                            <span class="badge rounded-pill bg-secondary-subtle text-secondary border px-2 py-1 fs-8" id="table-row-count-badge">0 Rows</span>
+                            <span
+                                class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace"
+                                id="header-db-badge">DB: db_default</span>
+                            <span class="badge rounded-pill bg-secondary-subtle text-secondary border px-2 py-1 fs-8"
+                                id="table-row-count-badge">0 Rows</span>
                         </div>
-                        <h6 class="mb-0 fw-bold text-dark mt-1 text-truncate" id="current-table-title" style="max-width: 200px;">Tabel: -</h6>
+                        <h6 class="mb-0 fw-bold text-dark mt-1 text-truncate" id="current-table-title"
+                            style="max-width: 200px;">Tabel: -</h6>
                     </div>
                 </div>
 
                 <div class="d-flex gap-2 align-items-center">
-                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 fs-8 d-none d-xl-inline-flex align-items-center gap-1" id="auto-save-status">
+                    <span
+                        class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 fs-8 d-none d-xl-inline-flex align-items-center gap-1"
+                        id="auto-save-status">
                         <i class="bi bi-cloud-check-fill"></i> Auto-Saved Cache
                     </span>
-                    <input type="file" id="import-json-file-input" accept=".json" class="d-none" onchange="handleImportJSON(event)">
-                    <input type="file" id="import-sql-file-input" accept=".sql,.txt" class="d-none" onchange="handleImportSQLFile(event)">
-                    <button class="btn btn-sm btn-outline-success rounded-3 d-none d-md-flex align-items-center gap-1" onclick="triggerImportSQLModal()" title="Import Script SQL (.sql)">
-                        <i class="bi bi-file-earmark-code"></i> Import SQL
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary rounded-3 d-none d-md-flex align-items-center gap-1" onclick="triggerImportJSON()" title="Import File JSON Backup">
-                        <i class="bi bi-upload"></i> Import JSON
-                    </button>
-                    <button class="btn btn-sm btn-outline-secondary rounded-3 d-none d-md-flex align-items-center gap-1" onclick="exportJSONSchema()" title="Backup Multi-DB ke JSON">
-                        <i class="bi bi-download"></i> Backup JSON
-                    </button>
-                    <button class="btn btn-sm btn-md-contained d-flex align-items-center gap-1" onclick="switchTabAndShowSQL()">
+                    <input type="file" id="import-json-file-input" accept=".json" class="d-none"
+                        onchange="handleImportJSON(event)">
+                    <input type="file" id="import-sql-file-input" accept=".sql,.txt" class="d-none"
+                        onchange="handleImportSQLFile(event)">
+                    <input type="file" id="import-xlsx-file-input" accept=".xlsx" class="d-none"
+                        onchange="importXLSXFile(event)">
+                    <input type="file" id="import-csv-file-input" accept=".csv,.txt" class="d-none"
+                        onchange="importCSVFile(event)">
+                    <div class="dropdown d-none d-md-block">
+                        <button class="btn btn-sm btn-outline-secondary rounded-3 dropdown-toggle d-flex align-items-center gap-1"
+                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-arrow-left-right"></i> Import / Export
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li><h6 class="dropdown-header">Import</h6></li>
+                            <li><a class="dropdown-item" href="#" onclick="triggerImportJSON(); return false;"><i class="bi bi-upload me-2"></i>Import JSON Backup</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="triggerImportSQLModal(); return false;"><i class="bi bi-file-earmark-code me-2"></i>Import SQL Script</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="triggerImportXLSX(); return false;"><i class="bi bi-file-excel me-2"></i>Import XLSX</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="triggerImportCSV(); return false;"><i class="bi bi-filetype-csv me-2"></i>Import CSV</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Export</h6></li>
+                            <li><a class="dropdown-item" href="#" onclick="exportJSONSchema(); return false;"><i class="bi bi-download me-2"></i>Backup JSON</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="downloadSQLFile(); return false;"><i class="bi bi-file-earmark-arrow-down me-2"></i>Download .sql</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-sm btn-md-contained d-flex align-items-center gap-1"
+                        onclick="switchTabAndShowSQL()">
                         <i class="bi bi-play-circle-fill"></i> <span class="d-none d-sm-inline">Generate SQL</span>
                     </button>
                 </div>
@@ -490,39 +179,51 @@
             <!-- Desktop Nav Tabs -->
             <ul class="nav nav-tabs px-4 pt-2 bg-white desktop-tabs" id="workspaceTabs" role="tablist">
                 <li class="nav-item">
-                    <button class="nav-link active" id="columns-tab" data-bs-toggle="tab" data-bs-target="#tab-columns" type="button" role="tab">
+                    <button class="nav-link active" id="columns-tab" data-bs-toggle="tab" data-bs-target="#tab-columns"
+                        type="button" role="tab">
                         <i class="bi bi-list-nested me-1"></i> Structure (Columns)
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="data-tab" data-bs-toggle="tab" data-bs-target="#tab-data" type="button" role="tab">
+                    <button class="nav-link" id="data-tab" data-bs-toggle="tab" data-bs-target="#tab-data" type="button"
+                        role="tab">
                         <i class="bi bi-grid-3x3-gap-fill me-1"></i> Records & Bulk Fill
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="erd-tab" data-bs-toggle="tab" data-bs-target="#tab-erd" type="button" role="tab">
+                    <button class="nav-link" id="erd-tab" data-bs-toggle="tab" data-bs-target="#tab-erd" type="button"
+                        role="tab">
                         <i class="bi bi-diagram-3 me-1"></i> D3.js ERD Visualizer
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="sql-tab" data-bs-toggle="tab" data-bs-target="#tab-sql" type="button" role="tab">
+                    <button class="nav-link" id="sql-tab" data-bs-toggle="tab" data-bs-target="#tab-sql" type="button"
+                        role="tab">
                         <i class="bi bi-code-square me-1"></i> Live SQL Preview
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="query-tab" data-bs-toggle="tab" data-bs-target="#tab-query"
+                        type="button" role="tab">
+                        <i class="bi bi-search me-1"></i> Query Builder
                     </button>
                 </li>
             </ul>
 
             <div class="tab-content p-3 p-md-4 flex-grow-1 overflow-y-auto">
-                
+
                 <!-- TAB 1: COLUMN STRUCTURE -->
                 <div class="tab-pane fade show active" id="tab-columns" role="tabpanel">
                     <div class="card card-custom p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                            <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-list-columns me-1"></i> Structure Kolom Tabel</h6>
+                            <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-list-columns me-1"></i> Structure
+                                Kolom Tabel</h6>
                             <div class="d-flex gap-2">
                                 <button class="btn btn-sm btn-outline-primary rounded-3" onclick="addColumnRow()">
                                     <i class="bi bi-plus-circle me-1"></i> Tambah Kolom
                                 </button>
-                                <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="addStandardIDColumn()">
+                                <button class="btn btn-sm btn-outline-secondary rounded-3"
+                                    onclick="addStandardIDColumn()">
                                     <i class="bi bi-key me-1"></i> Add PK (id)
                                 </button>
                             </div>
@@ -555,11 +256,14 @@
                     <div class="card card-custom p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                             <div>
-                                <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-node-plus me-1"></i> Data Records & Smart Bulk Fill</h6>
-                                <small class="text-muted d-none d-sm-block">Isi baris manual atau generate otomatis.</small>
+                                <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-node-plus me-1"></i> Data
+                                    Records & Smart Bulk Fill</h6>
+                                <small class="text-muted d-none d-sm-block">Isi baris manual atau generate
+                                    otomatis.</small>
                             </div>
                             <div class="d-flex gap-2 flex-wrap">
-                                <button class="btn btn-sm btn-success text-white fw-medium rounded-3" onclick="openBulkFillModal()">
+                                <button class="btn btn-sm btn-success text-white fw-medium rounded-3"
+                                    onclick="openBulkFillModal()">
                                     <i class="bi bi-lightning-charge-fill me-1"></i> Smart Bulk Fill
                                 </button>
                                 <button class="btn btn-sm btn-outline-primary rounded-3" onclick="addDataRow()">
@@ -588,12 +292,14 @@
                 <div class="tab-pane fade" id="tab-erd" role="tabpanel">
                     <div class="card card-custom p-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-diagram-3 me-1"></i> Diagram Relasi Entitas (D3.js)</h6>
+                            <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-diagram-3 me-1"></i> Diagram Relasi
+                                Entitas (D3.js)</h6>
                             <button class="btn btn-sm btn-outline-secondary rounded-3" onclick="renderD3ERD()">
                                 <i class="bi bi-arrow-clockwise me-1"></i> Refresh Layout
                             </button>
                         </div>
-                        <p class="text-muted fs-7 mb-2">Geser (Drag & Drop) untuk mengatur posisi, Scroll untuk Zoom. <b>Klik pada tabel</b> untuk mengedit via Popup Modal.</p>
+                        <p class="text-muted fs-7 mb-2">Geser (Drag & Drop) untuk mengatur posisi, Scroll untuk Zoom.
+                            <b>Klik pada tabel</b> untuk mengedit via Popup Modal.</p>
                         <div id="erd-canvas" style="touch-action: none;">
                             <!-- D3.js SVG akan di-render di sini -->
                         </div>
@@ -606,7 +312,8 @@
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                             <div class="d-flex align-items-center gap-2">
                                 <label class="fw-bold text-secondary mb-0 fs-7">Dialek:</label>
-                                <select class="form-select form-select-sm w-auto rounded-3" id="sql-dialect-select" onchange="updateSQLPreview()">
+                                <select class="form-select form-select-sm w-auto rounded-3" id="sql-dialect-select"
+                                    onchange="updateSQLPreview()">
                                     <option value="mysql" selected>MySQL / MariaDB</option>
                                     <option value="postgresql">PostgreSQL</option>
                                     <option value="sqlite">SQLite</option>
@@ -616,15 +323,18 @@
 
                             <div class="d-flex gap-2 align-items-center flex-wrap">
                                 <div class="form-check form-switch me-1">
-                                    <input class="form-check-input" type="checkbox" id="sql-include-db" checked onchange="updateSQLPreview()">
+                                    <input class="form-check-input" type="checkbox" id="sql-include-db" checked
+                                        onchange="updateSQLPreview()">
                                     <label class="form-check-label fs-7" for="sql-include-db">CREATE DB</label>
                                 </div>
                                 <div class="form-check form-switch me-1">
-                                    <input class="form-check-input" type="checkbox" id="sql-include-drop" checked onchange="updateSQLPreview()">
+                                    <input class="form-check-input" type="checkbox" id="sql-include-drop" checked
+                                        onchange="updateSQLPreview()">
                                     <label class="form-check-label fs-7" for="sql-include-drop">DROP TABLE</label>
                                 </div>
                                 <div class="form-check form-switch me-1">
-                                    <input class="form-check-input" type="checkbox" id="sql-include-insert" checked onchange="updateSQLPreview()">
+                                    <input class="form-check-input" type="checkbox" id="sql-include-insert" checked
+                                        onchange="updateSQLPreview()">
                                     <label class="form-check-label fs-7" for="sql-include-insert">INSERT</label>
                                 </div>
                                 <button class="btn btn-sm btn-outline-primary rounded-3" onclick="copySQLToClipboard()">
@@ -637,6 +347,117 @@
                         </div>
 
                         <div class="sql-output-box" id="sql-code-output">-- SQL Query akan muncul di sini...</div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: QUERY BUILDER -->
+                <div class="tab-pane fade" id="tab-query" role="tabpanel">
+                    <div class="card card-custom p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                            <div>
+                                <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-magic me-1"></i> Query Builder
+                                </h6>
+                            </div>
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Query mode">
+                                    <button class="btn btn-primary" id="qmode-form" onclick="setQueryMode('form')">
+                                        <i class="bi bi-ui-checks me-1"></i> Form Builder
+                                    </button>
+                                    <button class="btn btn-outline-secondary" id="qmode-manual" onclick="setQueryMode('manual')">
+                                        <i class="bi bi-code-slash me-1"></i> Manual SQL
+                                    </button>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-md-contained query-btn query-btn-run" onclick="runActiveQuery()">
+                                        <i class="bi bi-play-fill me-1"></i> Run Query
+                                    </button>
+                                    <button class="btn btn-md-outlined query-btn query-btn-clear" onclick="clearQuery()">
+                                        <i class="bi bi-x-circle me-1"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-muted mb-3"><small>Bangun query filter manual via form, atau ketik SQL lengkap pada mode Manual SQL.</small></p>
+
+                        <div id="query-form-pane">
+                        <div class="query-card mb-3">
+                            <label class="form-label fw-bold fs-8 mb-1" for="query-table-select">Tabel <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select form-select-sm query-table-select" id="query-table-select"
+                                onchange="refreshQueryOptions()">
+                                <option value="">-- Pilih Tabel --</option>
+                            </select>
+
+                            <label class="form-label fw-bold fs-8 mb-1 mt-2"
+                                for="query-operator-select">Operator</label>
+                            <select class="form-select form-select-sm query-operator-select" id="query-operator-select">
+                                <option value="equals">Sama dengan (=)</option>
+                                <option value="notEquals">Tidak sama dengan (<>)</option>
+                                <option value="contains">Mengandung</option>
+                                <option value="startsWith">Dimulai dengan</option>
+                                <option value="endsWith">Diakhiri dengan</option>
+                                <option value="greaterThan">Lebih besar dari (&gt;)</option>
+                                <option value="lessThan">Lebih kecil dari (&lt;)</option>
+                            </select>
+
+                            <label class="form-label fw-bold fs-8 mb-1 mt-2" for="query-value-input">Nilai</label>
+                            <input class="form-control form-control-sm query-value-input" id="query-value-input"
+                                type="text" placeholder="Masukkan nilai pencarian...">
+
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="query-include-soft-delete">
+                                <label class="form-check-label fs-7" for="query-include-soft-delete">
+                                    <small>Include soft-delete rows (jika ada kolom _deleted)</small>
+                                </label>
+                            </div>
+
+                            <div class="form-check mt-1">
+                                <input class="form-check-input" type="checkbox" id="query-select-all">
+                                <label class="form-check-label fs-7" for="query-select-all">
+                                    <small>Pilih semua kolom</small>
+                                </label>
+                            </div>
+                        </div>
+                        </div><!-- /#query-form-pane -->
+
+                        <div id="query-manual-pane" style="display: none;">
+                            <div class="sql-editor" id="manual-sql-editor"></div>
+                            <small class="text-muted d-block mt-1">Format: <code>SELECT kolom1, kolom2 | * FROM nama_tabel [WHERE kolom = nilai] [LIMIT n]</code></small>
+                        </div>
+
+                        <div id="query-result-wrapper" style="display: none;">
+                            <div class="query-result-count mb-2" id="query-result-count">0 Baris</div>
+
+                            <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
+                                <table class="table table-hover table-grid align-middle" id="query-result-table">
+                                    <thead class="query-result-head" id="query-result-head">
+                                        <!-- Headers populated after query -->
+                                    </thead>
+                                    <tbody id="query-result-body">
+                                        <!-- Rows rendered after query -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="query-footer">
+                                <div class="query-summary flex-grow-1" id="query-summary"></div>
+
+                                <div class="query-action-group">
+                                    <button class="btn btn-sm btn-outline-secondary query-btn"
+                                        onclick="copyQueryResult()" title="Salin hasil ke clipboard">
+                                        <i class="bi bi-clipboard me-1"></i> Salin
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary query-btn"
+                                        onclick="downloadQueryResultJSON()" title="Download hasil sebagai JSON">
+                                        <i class="bi bi-file-earmark-arrow-down me-1"></i> JSON
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger query-btn" onclick="clearQuery()">
+                                        <i class="bi bi-trash me-1"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -666,2280 +487,39 @@
             <i class="bi bi-code-square"></i>
             <span>SQL Code</span>
         </button>
+        <button class="mobile-nav-item" id="mob-nav-query" onclick="switchMobileTab('query')">
+            <i class="bi bi-search"></i>
+            <span>Query</span>
+        </button>
     </nav>
+
 
     <!-- JS Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+
+    <script src="js/core-state.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/query.js"></script>
+    <script src="js/import-sql.js"></script>
+    <script src="js/import-xlsx.js"></script>
+    <script src="js/import-csv.js"></script>
+    <script src="js/sql-editor.js"></script>
+    <script src="js/mobile-pwa.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/database-admin.js"></script>
+    <script src="js/columns.js"></script>
+    <script src="js/rows.js"></script>
+    <script src="js/bulk-fill.js"></script>
+    <script src="js/erd.js"></script>
+    <script src="js/sql-preview.js"></script>
+    <script src="js/seed.js"></script>
+    <script src="js/app-init.js"></script>
 
-    <script>
-        // APP STATE (MULTI-DATABASE STRUCTURE)
-        let appState = {
-            activeDbIndex: 0,
-            databases: []
-        };
-
-        const STORAGE_KEY_V2 = "SQL_FILLER_CACHE_MULTI_DB_V2";
-        const STORAGE_KEY_LEGACY = "SQL_FILLER_CACHE_V1";
-
-        const DATA_TYPES = [
-            "INT", "BIGINT", "VARCHAR", "TEXT", "DECIMAL", 
-            "DATETIME", "DATE", "BOOLEAN", "ENUM"
-        ];
-
-        // MOCK DATA DICTIONARIES
-        const MOCK_NAMES = ["Budi Santoso", "Siti Rahma", "Eko Prasetyo", "Dewi Lestari", "Agus Wijaya", "Rina Permata", "Ahmad Fauzi", "Nani Wijaya", "Rizky Ramadhan", "Maya Putri"];
-        const MOCK_CITIES = ["Jakarta", "Surabaya", "Bandung", "Medan", "Semarang", "Yogyakarta", "Depok", "Bali", "Makassar", "Palembang"];
-        const MOCK_DOMAINS = ["gmail.com", "yahoo.com", "company.id", "outlook.com", "tech.co.id"];
-        const MOCK_PRODUCTS = ["Laptop Pro 15", "Wireless Mouse", "Mechanical Keyboard", "Monitor 27 Inch", "USB-C Hub", "Headset Gaming", "Webcam HD", "Desk Mat XL"];
-        const MOCK_CATEGORIES = ["Elektronik", "Fashion", "Makanan", "Minuman", "Kesehatan", "Peralatan", "Kantor", "Olahraga"];
-        const MOCK_BRANDS = ["Samsung", "Apple", "Sony", "Logitech", "Razer", "Lenovo", "Adidas", "Nike", "Indomie", "Kapal Api"];
-        const MOCK_PAYMENT_METHODS = ["Tunai", "Transfer Bank", "QRIS", "Kartu Kredit", "Kartu Debit", "E-Wallet", "Cicilan"];
-        const MOCK_TXN_STATUS = ["Selesai", "Pending", "Dibatalkan", "Refund"];
-        const MOCK_STAFF = ["Andi Kasir", "Sari Kasir", "Dedi Manager", "Rina Supervisor", "Joko Staff"];
-        const MOCK_ADDRESSES = ["Jl. Merdeka No. 10", "Jl. Sudirman Kav. 5", "Jl. Ahmad Yani 22", "Jl. Diponegoro 8", "Jl. Gajah Mada 15", "Jl. Pahlawan 3", "Jl. Cendana 7", "Jl. Kenanga 12"];
-
-        let deferredPWAPrompt = null;
-
-        window.onload = function() {
-            initPWAInstallPrompt();
-            loadCachedDataOrDefaults();
-
-            // Render ERD & SQL Preview HANYA setelah tab benar-benar terlihat.
-            // Jika dirender saat display:none, clientWidth/Height = 0 -> layout rusak.
-            document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tabEl => {
-                tabEl.addEventListener('shown.bs.tab', function() {
-                    const targetId = this.getAttribute('data-bs-target');
-                    if (targetId === '#tab-erd') renderD3ERD();
-                    else if (targetId === '#tab-sql') updateSQLPreview();
-                });
-            });
-        };
-
-        function loadCachedDataOrDefaults() {
-            // Check V2 Cache (Multi-DB)
-            const cachedV2 = localStorage.getItem(STORAGE_KEY_V2);
-            if (cachedV2) {
-                try {
-                    const parsed = JSON.parse(cachedV2);
-                    if (parsed && Array.isArray(parsed.databases) && parsed.databases.length > 0) {
-                        appState = parsed;
-                        if (appState.activeDbIndex >= appState.databases.length) appState.activeDbIndex = 0;
-                        renderAllUI();
-                        return;
-                    }
-                } catch (e) {
-                    console.error("V2 Cache invalid", e);
-                }
-            }
-
-            // Migration from V1 Cache (Single DB)
-            const cachedV1 = localStorage.getItem(STORAGE_KEY_LEGACY);
-            if (cachedV1) {
-                try {
-                    const parsedV1 = JSON.parse(cachedV1);
-                    if (parsedV1 && Array.isArray(parsedV1.tables)) {
-                        appState = {
-                            activeDbIndex: 0,
-                            databases: [
-                                {
-                                    name: "db_default",
-                                    activeTableIndex: parsedV1.activeTableIndex || 0,
-                                    tables: parsedV1.tables
-                                }
-                            ]
-                        };
-                        saveToLocalStorage();
-                        renderAllUI();
-                        return;
-                    }
-                } catch (e) {
-                    console.error("V1 Cache invalid", e);
-                }
-            }
-
-            // Fallback: Default Sample Schema
-            loadSampleSchema();
-        }
-
-        function saveToLocalStorage() {
-            try {
-                localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(appState));
-                const statusBadge = document.getElementById("auto-save-status");
-                if (statusBadge) {
-                    statusBadge.style.opacity = "1";
-                }
-            } catch (e) {
-                console.error("Gagal menyimpan cache:", e);
-            }
-        }
-
-        function getCurrentDatabase() {
-            if (!appState.databases || appState.databases.length === 0) return null;
-            return appState.databases[appState.activeDbIndex];
-        }
-
-        function getCurrentTable() {
-            const db = getCurrentDatabase();
-            if (!db || !db.tables || db.tables.length === 0) return null;
-            if (db.activeTableIndex >= db.tables.length) db.activeTableIndex = 0;
-            return db.tables[db.activeTableIndex];
-        }
-
-        function loadSampleSchema() {
-            appState = {
-                activeDbIndex: 0,
-                databases: [
-                    {
-                        name: "db_pos",
-                        activeTableIndex: 0,
-                        tables: [
-                            {
-                                name: "categories",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "nama_kategori", type: "VARCHAR", length: "100", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "deskripsi", type: "TEXT", length: "", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "created_at", type: "DATETIME", length: "", pk: false, ai: false, notNull: true, defaultValue: "CURRENT_TIMESTAMP" }
-                                ],
-                                rows: [
-                                    { id: 1, nama_kategori: "Elektronik", deskripsi: "Perangkat elektronik & aksesoris", created_at: "2026-01-01 08:00:00" },
-                                    { id: 2, nama_kategori: "Fashion", deskripsi: "Pakaian & aksesoris fashion", created_at: "2026-01-01 08:00:00" },
-                                    { id: 3, nama_kategori: "Makanan", deskripsi: "Produk makanan & camilan", created_at: "2026-01-01 08:00:00" }
-                                ]
-                            },
-                            {
-                                name: "products",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "kode_sku", type: "VARCHAR", length: "50", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "barcode", type: "VARCHAR", length: "50", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "nama_produk", type: "VARCHAR", length: "200", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "kategori_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "brand", type: "VARCHAR", length: "100", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "harga_beli", type: "DECIMAL", length: "12,2", pk: false, ai: false, notNull: true, defaultValue: "0" },
-                                    { name: "harga_jual", type: "DECIMAL", length: "12,2", pk: false, ai: false, notNull: true, defaultValue: "0" },
-                                    { name: "stok", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "0" },
-                                    { name: "satuan", type: "VARCHAR", length: "20", pk: false, ai: false, notNull: false, defaultValue: "pcs" },
-                                    { name: "created_at", type: "DATETIME", length: "", pk: false, ai: false, notNull: true, defaultValue: "CURRENT_TIMESTAMP" }
-                                ],
-                                rows: [
-                                    { id: 1, kode_sku: "SKU-SAM-1001", barcode: "8991002100011", nama_produk: "Laptop Pro 15", kategori_id: 1, brand: "Samsung", harga_beli: "12000000", harga_jual: "15000000", stok: 25, satuan: "unit", created_at: "2026-01-05 09:00:00" },
-                                    { id: 2, kode_sku: "SKU-LOG-1002", barcode: "8991002100028", nama_produk: "Wireless Mouse", kategori_id: 1, brand: "Logitech", harga_beli: "150000", harga_jual: "250000", stok: 100, satuan: "pcs", created_at: "2026-01-05 09:00:00" },
-                                    { id: 3, kode_sku: "SKU-ADM-1003", barcode: "8991002100035", nama_produk: "Kaos Polos Hitam", kategori_id: 2, brand: "Adidas", harga_beli: "50000", harga_jual: "95000", stok: 200, satuan: "pcs", created_at: "2026-01-06 10:00:00" }
-                                ]
-                            },
-                            {
-                                name: "customers",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "kode_customer", type: "VARCHAR", length: "30", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "nama", type: "VARCHAR", length: "150", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "email", type: "VARCHAR", length: "100", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "telepon", type: "VARCHAR", length: "20", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "alamat", type: "TEXT", length: "", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "kota", type: "VARCHAR", length: "50", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "created_at", type: "DATETIME", length: "", pk: false, ai: false, notNull: true, defaultValue: "CURRENT_TIMESTAMP" }
-                                ],
-                                rows: [
-                                    { id: 1, kode_customer: "CUST-0001", nama: "Budi Santoso", email: "budi@gmail.com", telepon: "081234567890", alamat: "Jl. Merdeka No. 10", kota: "Jakarta", created_at: "2026-01-10 09:00:00" },
-                                    { id: 2, kode_customer: "CUST-0002", nama: "Siti Rahma", email: "siti@yahoo.com", telepon: "082345678901", alamat: "Jl. Sudirman Kav. 5", kota: "Bandung", created_at: "2026-02-14 14:30:00" }
-                                ]
-                            },
-                            {
-                                name: "suppliers",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "nama_supplier", type: "VARCHAR", length: "150", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "telepon", type: "VARCHAR", length: "20", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "alamat", type: "TEXT", length: "", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "kota", type: "VARCHAR", length: "50", pk: false, ai: false, notNull: false, defaultValue: "" }
-                                ],
-                                rows: [
-                                    { id: 1, nama_supplier: "PT Elektronik Jaya", telepon: "021-5551234", alamat: "Jl. Industri Raya No. 8", kota: "Jakarta" },
-                                    { id: 2, nama_supplier: "CV Fashion Nusantara", telepon: "021-5555678", alamat: "Jl. Tekstil No. 21", kota: "Bandung" }
-                                ]
-                            },
-                            {
-                                name: "transactions",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "no_transaksi", type: "VARCHAR", length: "30", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "tanggal", type: "DATETIME", length: "", pk: false, ai: false, notNull: true, defaultValue: "CURRENT_TIMESTAMP" },
-                                    { name: "customer_id", type: "INT", length: "11", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "kasir_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "subtotal", type: "DECIMAL", length: "12,2", pk: false, ai: false, notNull: true, defaultValue: "0" },
-                                    { name: "diskon", type: "DECIMAL", length: "12,2", pk: false, ai: false, notNull: true, defaultValue: "0" },
-                                    { name: "total", type: "DECIMAL", length: "12,2", pk: false, ai: false, notNull: true, defaultValue: "0" },
-                                    { name: "payment_method", type: "VARCHAR", length: "30", pk: false, ai: false, notNull: false, defaultValue: "Tunai" },
-                                    { name: "status", type: "VARCHAR", length: "20", pk: false, ai: false, notNull: false, defaultValue: "Selesai" }
-                                ],
-                                rows: [
-                                    { id: 1, no_transaksi: "TRX-20260110-0001", tanggal: "2026-01-10 09:15:00", customer_id: 1, kasir_id: 1, subtotal: "15250000", diskon: "0", total: "15250000", payment_method: "Tunai", status: "Selesai" },
-                                    { id: 2, no_transaksi: "TRX-20260214-0002", tanggal: "2026-02-14 14:45:00", customer_id: 2, kasir_id: 2, subtotal: "95000", diskon: "5000", total: "90000", payment_method: "QRIS", status: "Selesai" }
-                                ]
-                            },
-                            {
-                                name: "transaction_details",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "transaction_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "product_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "qty", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "1" },
-                                    { name: "harga", type: "DECIMAL", length: "12,2", pk: false, ai: false, notNull: true, defaultValue: "0" },
-                                    { name: "subtotal", type: "DECIMAL", length: "12,2", pk: false, ai: false, notNull: true, defaultValue: "0" }
-                                ],
-                                rows: [
-                                    { id: 1, transaction_id: 1, product_id: 1, qty: 1, harga: "15000000", subtotal: "15000000" },
-                                    { id: 2, transaction_id: 1, product_id: 2, qty: 1, harga: "250000", subtotal: "250000" },
-                                    { id: 3, transaction_id: 2, product_id: 3, qty: 1, harga: "95000", subtotal: "95000" }
-                                ]
-                            },
-                            {
-                                name: "payments",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "transaction_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "amount", type: "DECIMAL", length: "12,2", pk: false, ai: false, notNull: true, defaultValue: "0" },
-                                    { name: "payment_method", type: "VARCHAR", length: "30", pk: false, ai: false, notNull: false, defaultValue: "Tunai" },
-                                    { name: "tanggal", type: "DATETIME", length: "", pk: false, ai: false, notNull: true, defaultValue: "CURRENT_TIMESTAMP" }
-                                ],
-                                rows: [
-                                    { id: 1, transaction_id: 1, amount: "15250000", payment_method: "Tunai", tanggal: "2026-01-10 09:16:00" },
-                                    { id: 2, transaction_id: 2, amount: "90000", payment_method: "QRIS", tanggal: "2026-02-14 14:46:00" }
-                                ]
-                            },
-                            {
-                                name: "stock_movements",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "product_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "tipe", type: "VARCHAR", length: "20", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "qty", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "0" },
-                                    { name: "keterangan", type: "VARCHAR", length: "200", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "tanggal", type: "DATETIME", length: "", pk: false, ai: false, notNull: true, defaultValue: "CURRENT_TIMESTAMP" }
-                                ],
-                                rows: [
-                                    { id: 1, product_id: 1, tipe: "Masuk", qty: 50, keterangan: "Restock dari supplier", tanggal: "2026-01-05 09:00:00" },
-                                    { id: 2, product_id: 1, tipe: "Keluar", qty: 1, keterangan: "Penjualan TRX-20260110-0001", tanggal: "2026-01-10 09:15:00" }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        name: "db_inventory",
-                        activeTableIndex: 0,
-                        tables: [
-                            {
-                                name: "warehouses",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "nama_gudang", type: "VARCHAR", length: "100", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "lokasi", type: "VARCHAR", length: "200", pk: false, ai: false, notNull: false, defaultValue: "" }
-                                ],
-                                rows: [
-                                    { id: 1, nama_gudang: "Gudang Pusat", lokasi: "Jakarta Utara" },
-                                    { id: 2, nama_gudang: "Gudang Cabang", lokasi: "Bandung" }
-                                ]
-                            },
-                            {
-                                name: "stocks",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "product_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "warehouse_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "qty", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "0" }
-                                ],
-                                rows: [
-                                    { id: 1, product_id: 1, warehouse_id: 1, qty: 25 },
-                                    { id: 2, product_id: 2, warehouse_id: 1, qty: 100 },
-                                    { id: 3, product_id: 3, warehouse_id: 2, qty: 200 }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        name: "db_hris",
-                        activeTableIndex: 0,
-                        tables: [
-                            {
-                                name: "employees",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "nik", type: "VARCHAR", length: "20", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "nama", type: "VARCHAR", length: "150", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "email", type: "VARCHAR", length: "100", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "telepon", type: "VARCHAR", length: "20", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "alamat", type: "TEXT", length: "", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "posisi", type: "VARCHAR", length: "50", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "gaji", type: "DECIMAL", length: "12,2", pk: false, ai: false, notNull: false, defaultValue: "0" },
-                                    { name: "tanggal_masuk", type: "DATE", length: "", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "status", type: "VARCHAR", length: "20", pk: false, ai: false, notNull: false, defaultValue: "Aktif" }
-                                ],
-                                rows: [
-                                    { id: 1, nik: "EMP-001", nama: "Andi Kasir", email: "andi@company.id", telepon: "081111111111", alamat: "Jl. Merdeka No. 1", posisi: "Kasir", gaji: "4500000", tanggal_masuk: "2025-01-15", status: "Aktif" },
-                                    { id: 2, nik: "EMP-002", nama: "Sari Kasir", email: "sari@company.id", telepon: "082222222222", alamat: "Jl. Sudirman No. 5", posisi: "Kasir", gaji: "4500000", tanggal_masuk: "2025-03-01", status: "Aktif" },
-                                    { id: 3, nik: "EMP-003", nama: "Dedi Manager", email: "dedi@company.id", telepon: "083333333333", alamat: "Jl. Diponegoro No. 8", posisi: "Manager", gaji: "8000000", tanggal_masuk: "2024-06-01", status: "Aktif" }
-                                ]
-                            },
-                            {
-                                name: "attendances",
-                                columns: [
-                                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                                    { name: "employee_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "tanggal", type: "DATE", length: "", pk: false, ai: false, notNull: true, defaultValue: "" },
-                                    { name: "jam_masuk", type: "VARCHAR", length: "8", pk: false, ai: false, notNull: false, defaultValue: "" },
-                                    { name: "jam_keluar", type: "VARCHAR", length: "8", pk: false, ai: false, notNull: false, defaultValue: "" }
-                                ],
-                                rows: [
-                                    { id: 1, employee_id: 1, tanggal: "2026-10-01", jam_masuk: "08:00:00", jam_keluar: "17:00:00" },
-                                    { id: 2, employee_id: 2, tanggal: "2026-10-01", jam_masuk: "08:05:00", jam_keluar: "17:00:00" }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            };
-
-            saveToLocalStorage();
-            renderAllUI();
-
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Sample Multi-DB POS Dimuat!',
-                showConfirmButton: false,
-                timer: 2000
-            });
-        }
-
-        // ==========================================
-        // LOAD KAFEINARTS PRODUCTS (Multi-Table Relational)
-        // ==========================================
-        function loadKafeinartsProducts() {
-            const db = getCurrentDatabase();
-            if (!db) {
-                Swal.fire('Error', 'Tidak ada database aktif. Buat database terlebih dahulu.', 'error');
-                return;
-            }
-
-            // Data 12 produk dari https://kafeinarts-five.vercel.app/products
-            const products = [
-                { slug: "erp", name: "Kafeinarts ERP", shortName: "ERP", category: "system", tagline: "Kelola seluruh operasional bisnis dalam satu platform terpadu.", headline: "Enterprise Resource Planning untuk bisnis yang bertumbuh", description: "Sistem Enterprise Resource Planning yang menyatukan keuangan, inventori, pembelian, penjualan, dan SDM dalam satu dasbor terpusat.", isDemo: true, urlDemo: "https://kafeinarts.akio-server.my.id/login", icon: "bi-diagram-3", color: "#2563eb", highlights: "10+ modul terintegrasi|Laporan real-time|Multi-cabang & multi-gudang" },
-                { slug: "simrs", name: "Kafeinarts SIMRS", shortName: "SIMRS", category: "system", tagline: "Sistem Informasi Manajemen Rumah Sakit yang tepat guna.", headline: "SIMRS berstandar SATUSEHAT untuk rumah sakit modern", description: "SIMRS berstandar SATUSEHAT yang menghubungkan pendaftaran, rawat jalan, rawat inap, farmasi, laboratorium, hingga klaim BPJS.", isDemo: false, urlDemo: "", icon: "bi-hospital", color: "#0d9488", highlights: "Standar SATUSEHAT|Bridging BPJS VClaim|RME terintegrasi" },
-                { slug: "lms", name: "Kafeinarts LMS", shortName: "LMS", category: "system", tagline: "Platform pembelajaran online untuk sekolah dan korporat.", headline: "Learning Management System yang mudah dipakai semua kalangan", description: "Learning Management System untuk mengelola kelas virtual, materi, kuis, sertifikasi, hingga pelaporan progres belajar.", isDemo: false, urlDemo: "", icon: "bi-mortarboard", color: "#7c3aed", highlights: "Kelas virtual & live class|Kuis dengan penilaian otomatis|Sertifikat terbit otomatis" },
-                { slug: "cms", name: "Kafeinarts CMS", shortName: "CMS", category: "system", tagline: "Kelola konten website tanpa perlu menyentuh kode.", headline: "Content Management System yang ringan dan aman", description: "Content Management System yang ringan dan aman untuk mengelola artikel, halaman, galeri, hingga landing page promosi.", isDemo: false, urlDemo: "", icon: "bi-layout-text-window-reverse", color: "#ea580c", highlights: "Editor visual WYSIWYG|Pustaka media rapi|SEO friendly" },
-                { slug: "event-management", name: "Kafeinarts EMS", shortName: "Event Management", category: "system", tagline: "Atur event dari pendaftaran hingga sertifikat peserta.", headline: "Platform manajemen acara menyeluruh", description: "Platform manajemen acara menyeluruh: pendaftaran peserta, pembayaran tiket, QR check-in, absensi sesi, hingga laporan kehadiran.", isDemo: false, urlDemo: "", icon: "bi-calendar2-event", color: "#db2777", highlights: "QR check-in 3 detik|Payment gateway QRIS|Sertifikat peserta otomatis" },
-                { slug: "point-of-sale", name: "Point of Sales", shortName: "POS", category: "system", tagline: "Kasir cepat untuk retail, F&B, dan multi-outlet.", headline: "Point of sale ringan yang tetap jalan saat internet mati", description: "Sistem kasir dengan mode offline-first: transaksi cepat, cetak struk thermal, manajemen stok real-time, hak akses per kasir.", isDemo: true, urlDemo: "https://cashy-pied.vercel.app/", icon: "bi-shop", color: "#0f766e", highlights: "Mode offline-first|Struk thermal|Laporan real-time" },
-                { slug: "company-profile", name: "Website Company Profile", shortName: "Company Profile", category: "website", tagline: "Wajah profesional perusahaan Anda di dunia digital.", headline: "Company profile elegan yang membangun kredibilitas", description: "Website company profile elegan untuk membangun kredibilitas bisnis: profil, visi-misi, layanan, portofolio, hingga halaman kontak.", isDemo: false, urlDemo: "", icon: "bi-buildings", color: "#0f766e", highlights: "Selesai 2-3 minggu|Termasuk CMS|Terhubung WhatsApp" },
-                { slug: "landing-page", name: "Landing Page", shortName: "Landing Page", category: "website", tagline: "Satu halaman yang fokus pada konversi penjualan.", headline: "Landing page cepat yang mengubah klik jadi leads", description: "Landing page high-conversion untuk kampanye iklan, peluncuran produk, atau promo: hero meyakinkan, social proof, FAQ, dan CTA.", isDemo: false, urlDemo: "", icon: "bi-rocket-takeoff", color: "#d97706", highlights: "Live 1-2 minggu|Mobile first|Siap pixel iklan" },
-                { slug: "web-profile", name: "Web Profil Bisnis", shortName: "Web Profile", category: "website", tagline: "Situs ringkas untuk personal brand & UMKM.", headline: "Cara tercepat tampil kredibel secara online", description: "Web profil satu-dua halaman yang memperkenalkan diri, jasa, katalog, dan kontak secara singkat.", isDemo: false, urlDemo: "", icon: "bi-person-vcard", color: "#4f46e5", highlights: "Jadi 1 minggu|Investasi hemat|Order via WhatsApp" },
-                { slug: "e-commerce", name: "Website E-Commerce", shortName: "E-Commerce", category: "website", tagline: "Toko online lengkap dengan pembayaran & pengiriman.", headline: "Toko online milik sendiri, bebas aturan marketplace", description: "Platform toko online dengan katalog produk, keranjang, checkout, integrasi payment gateway, ongkir otomatis.", isDemo: false, urlDemo: "", icon: "bi-cart3", color: "#be123c", highlights: "Payment gateway penuh|Ongkir otomatis|Dashboard admin lengkap" },
-                { slug: "undangan-digital", name: "Website Undangan Digital", shortName: "Undangan Digital", category: "website", tagline: "Undangan pernikahan & acara yang elegan dibuka dari HP.", headline: "Satu tautan undangan yang dibagikan lewat WhatsApp", description: "Website undangan digital dengan RSVP, galeri foto, musik latar, peta lokasi, countdown, dan live streaming.", isDemo: false, urlDemo: "", icon: "bi-envelope-heart", color: "#e11d48", highlights: "Tayang 2-5 hari|RSVP & buku tamu|Musik & live streaming" }
-            ];
-
-            const features = {
-                erp: [
-                    { icon: "bi-cash-stack", title: "Modul Keuangan", desc: "Pembukuan, jurnal otomatis, dan laporan keuangan sesuai standar." },
-                    { icon: "bi-box-seam", title: "Manajemen Inventori", desc: "Stok multi-gudang dengan peringatan stok minimum secara real-time." },
-                    { icon: "bi-cart-check", title: "Sales & Purchasing", desc: "Alur order, PO, dan faktur yang terintegrasi dari hulu ke hilir." },
-                    { icon: "bi-people", title: "HR & Payroll", desc: "Data karyawan, absensi, dan penggajian otomatis dalam satu modul." },
-                    { icon: "bi-graph-up", title: "Dasbor Eksekutif", desc: "Grafik penjualan, margin, dan arus kas untuk pengambilan keputusan cepat." },
-                    { icon: "bi-shield-lock", title: "Keamanan & Audit", desc: "Backup otomatis, aktivitas pengguna tercatat, dan kontrol akses granular." }
-                ],
-                simrs: [
-                    { icon: "bi-clipboard2-pulse", title: "Rawat Jalan & Inap", desc: "Pendaftaran, antrean, rekam medis elektronik (RME), dan CPPT." },
-                    { icon: "bi-capsule", title: "Farmasi & Gudang", desc: "Resep digital, stok obat, dan pharmacovigilance terintegrasi." },
-                    { icon: "bi-shield-check", title: "Klaim BPJS", desc: "Verifikasi eligibilitas VClaim dan bridging SEP secara otomatis." },
-                    { icon: "bi-hdd-network", title: "Integrasi SATUSEHAT", desc: "Pertukaran data FHIR sesuai regulasi Kemenkes." },
-                    { icon: "bi-clipboard2-data", title: "Laboratorium & Radiologi", desc: "Order pemeriksaan, hasil terintegrasi ke RME pasien." },
-                    { icon: "bi-cash-coin", title: "Kasir & Klaim", desc: "Tagihan gabungan umum/BPJS, rekap klaim, dan laporan pendapatan." }
-                ],
-                lms: [
-                    { icon: "bi-easel", title: "Kelas Virtual", desc: "Materi teks, video, dan live class dengan integrasi meeting." },
-                    { icon: "bi-ui-checks", title: "Kuis & Ujian", desc: "Bank soal, penilaian otomatis, dan anti-cheating sederhana." },
-                    { icon: "bi-award", title: "Sertifikat Otomatis", desc: "Sertifikat diterbitkan otomatis saat peserta lulus kursus." },
-                    { icon: "bi-graph-up-arrow", title: "Analitik Belajar", desc: "Pantau progres siswa/tim dengan dashboard visual per kelas." },
-                    { icon: "bi-chat-square-text", title: "Diskusi & Tanya Jawab", desc: "Forum per kelas untuk diskusi materi dan klarifikasi tugas." },
-                    { icon: "bi-envelope-check", title: "Notifikasi Otomatis", desc: "Pengingat jadwal, deadline tugas, dan pengumuman via email/WA." }
-                ],
-                cms: [
-                    { icon: "bi-pencil-square", title: "Editor Visual", desc: "Tulis dan susun konten dengan editor WYSIWYG yang intuitif." },
-                    { icon: "bi-images", title: "Manajemen Media", desc: "Upload, crop, dan organisasi gambar/file dalam satu pustaka." },
-                    { icon: "bi-search", title: "SEO Friendly", desc: "Meta, sitemap, dan struktur URL yang ramah mesin pencari." },
-                    { icon: "bi-person-lock", title: "Peran & Hak Akses", desc: "Admin, editor, penulis — atur wewenang masing-masing." },
-                    { icon: "bi-clock-history", title: "Jadwal Terbit", desc: "Tulis hari ini, terbitkan otomatis di tanggal/jam yang ditentukan." },
-                    { icon: "bi-shield-check", title: "Keamanan & Backup", desc: "Login aman, rate limit, dan backup konten otomatis." }
-                ],
-                "event-management": [
-                    { icon: "bi-ticket-perforated", title: "Tiket & Pendaftaran", desc: "Jenis tiket, kuota, early bird, dan konfirmasi otomatis." },
-                    { icon: "bi-qr-code-scan", title: "QR Check-in", desc: "Scan QR fisik perangkat apa pun dengan sinkronisasi real-time." },
-                    { icon: "bi-credit-card-2-front", title: "Pembayaran", desc: "Integrasi payment gateway VA, QRIS, dan e-wallet." },
-                    { icon: "bi-bar-chart-line", title: "Laporan Event", desc: "Rekap kehadiran, demografi peserta, dan export data." },
-                    { icon: "bi-person-lines-fill", title: "Absensi Sesi", desc: "Rekam kehadiran per sesi/ruangan untuk event multi-sesi." },
-                    { icon: "bi-patch-check", title: "Sertifikat Peserta", desc: "Sertifikat diterbitkan otomatis sesuai kehadiran minimal." }
-                ],
-                "point-of-sale": [
-                    { icon: "bi-cart", title: "Kasir Cepat", desc: "Cari item lewat nama atau barcode, terapkan diskon & pajak." },
-                    { icon: "bi-box-seam", title: "Manajemen Stok", desc: "Stok berkurang otomatis saat penjualan, lengkap dengan stok opname." },
-                    { icon: "bi-printer", title: "Cetak Struk Thermal", desc: "Terhubung printer struk 58/80mm dengan tata letak rapi." },
-                    { icon: "bi-upc-scan", title: "Scan Barcode", desc: "Gunakan scanner USB atau kamera HP untuk memindai barcode." },
-                    { icon: "bi-graph-up", title: "Laporan Penjualan", desc: "Rekap harian dan bulanan, produk terlaris, margin per item." },
-                    { icon: "bi-shield-check", title: "Hak Akses Kasir", desc: "Akun per kasir dengan shift, rekam jejak transaksi, dan laporan selisih kas." }
-                ],
-                "company-profile": [
-                    { icon: "bi-person-badge", title: "Profil & Visi Misi", desc: "Sampaikan identitas, sejarah, dan nilai perusahaan dengan elegan." },
-                    { icon: "bi-briefcase", title: "Layanan & Portofolio", desc: "Pajangan layanan dan portofolio proyek yang menarik calon klien." },
-                    { icon: "bi-chat-dots", title: "Terhubung WhatsApp", desc: "Tombol kontak langsung ke WhatsApp dan form yang terintegrasi." },
-                    { icon: "bi-search", title: "SEO Dasar", desc: "Struktur semantic, meta tag, dan kecepatan muat yang optimal." },
-                    { icon: "bi-pencil-square", title: "CMS Mandiri", desc: "Perbarui konten, portofolio, dan artikel tanpa bantuan developer." },
-                    { icon: "bi-translate", title: "Multi-bahasa (opsional)", desc: "Dukungan dua bahasa untuk menjangkau klien internasional." }
-                ],
-                "landing-page": [
-                    { icon: "bi-bullseye", title: "Fokus Konversi", desc: "Struktur copywriting dan CTA yang dirancang menghasilkan leads." },
-                    { icon: "bi-lightning-charge", title: "Super Cepat", desc: "Optimasi Core Web Vitals untuk skor iklan dan SEO yang lebih baik." },
-                    { icon: "bi-megaphone", title: "Siap Kampanye", desc: "Integrasi pixel tracking (Meta, Google) dan form leads." },
-                    { icon: "bi-phone", title: "Mobile First", desc: "Tampilan sempurna di smartphone tempat mayoritas traffic berada." },
-                    { icon: "bi-chat-quote", title: "Social Proof", desc: "Testimoni, logo klien, dan penghitung statistik untuk membangun trust." },
-                    { icon: "bi-question-circle", title: "FAQ Objection Handling", desc: "Jawaban atas keraguan umum yang sering menghambat keputusan." }
-                ],
-                "web-profile": [
-                    { icon: "bi-badge-ad", title: "Personal Branding", desc: "Perkenalkan keahlian, pengalaman, dan kredensial secara menarik." },
-                    { icon: "bi-shop", title: "Katalog Produk/Jasa", desc: "Pajangan katalog ringkas dengan tombol pesan langsung." },
-                    { icon: "bi-link-45deg", title: "Link Hub", desc: "Kumpulkan semua link penting bisnis Anda dalam satu halaman." },
-                    { icon: "bi-whatsapp", title: "Order via WhatsApp", desc: "Pengunjung dapat memesan langsung tanpa daftar akun." },
-                    { icon: "bi-map", title: "Peta & Jam Operasional", desc: "Lokasi toko/office dan jam buka yang mudah ditemukan." },
-                    { icon: "bi-share", title: "Mudah Dibagikan", desc: "Tampil rapi saat link dibagikan ke WA dan media sosial." }
-                ],
-                "e-commerce": [
-                    { icon: "bi-grid", title: "Katalog & Variasi", desc: "Produk dengan variasi ukuran, warna, dan foto galeri." },
-                    { icon: "bi-credit-card", title: "Payment Gateway", desc: "Terima VA bank, QRIS, dan e-wallet secara otomatis." },
-                    { icon: "bi-truck", title: "Ongkir Otomatis", desc: "Integrasi kurir dengan cek resi dan biaya kirim real-time." },
-                    { icon: "bi-speedometer2", title: "Dashboard Admin", desc: "Kelola pesanan, stok, dan laporan penjualan dari satu tempat." },
-                    { icon: "bi-ticket-percent", title: "Promo & Kupon", desc: "Diskon, voucher, dan flash sale yang diatur dari dasbor." },
-                    { icon: "bi-bell", title: "Notifikasi Pesanan", desc: "Pesanan baru masuk ke email/WA admin beserta detailnya." }
-                ],
-                "undangan-digital": [
-                    { icon: "bi-palette", title: "Template Elegan", desc: "Pilihan desain dengan warna dan tipografi yang disesuaikan." },
-                    { icon: "bi-calendar-check", title: "RSVP & Buku Tamu", desc: "Tamu mengonfirmasi kehadiran langsung di undangan." },
-                    { icon: "bi-images", title: "Galeri Foto & Love Story", desc: "Galeri prewedding dan lini masa kisah cinta." },
-                    { icon: "bi-music-note", title: "Musik & Live Streaming", desc: "Musik latar pilihan Anda serta embed YouTube." },
-                    { icon: "bi-geo-alt", title: "Peta & Navigasi", desc: "Lokasi acara terpetakan dengan tombol navigasi." },
-                    { icon: "bi-clock", title: "Countdown & Bagikan Mudah", desc: "Hitung mundur menuju hari-H dan tombol bagikan." }
-                ]
-            };
-
-            const pricingPlans = {
-                erp: [
-                    { name: "Starter", tagline: "Untuk UKM yang baru rapi-kan pembukuan", price: 3500000, currency: "IDR", period: "proyek", description: "Modul inti siap pakai: keuangan, inventori, dan penjualan.", featured: false },
-                    { name: "Business", tagline: "Paling populer untuk bisnis multi-departemen", price: 12500000, currency: "IDR", period: "proyek", description: "Modul lengkap + kustomisasi alur kerja sesuai proses bisnis Anda.", featured: true },
-                    { name: "Enterprise", tagline: "Untuk perusahaan multi-cabang berskala besar", price: null, currency: "IDR", period: "proyek", description: "Skema kerja sama khusus: deployment on-premise/cloud, integrasi sistem lama, dan SLA.", featured: false }
-                ],
-                simrs: [
-                    { name: "Klinik & RS Kelas D", tagline: "Untuk fasilitas kesehatan primer", price: 45000000, currency: "IDR", period: "proyek", description: "Modul inti pelayanan dengan integrasi SATUSEHAT.", featured: false },
-                    { name: "RS Kelas B/C", tagline: "Paling populer untuk RS umum", price: null, currency: "IDR", period: "proyek", description: "Modul lengkap rawat jalan, inap, IGD, hingga bridging BPJS penuh.", featured: true },
-                    { name: "RS Kelas A / Jaringan", tagline: "Untuk RS rujukan & grup rumah sakit", price: null, currency: "IDR", period: "proyek", description: "Skema khusus multi-rumah sakit dengan data warehouse dan BI.", featured: false }
-                ],
-                lms: [
-                    { name: "Kelas", tagline: "Untuk guru/lembaga yang baru mulai daring", price: 2500000, currency: "IDR", period: "proyek", description: "Satu institusi dengan kelas terbatas, siap pakai dalam hitungan hari.", featured: false },
-                    { name: "Institusi", tagline: "Paling populer untuk sekolah & pelatihan", price: 7500000, currency: "IDR", period: "proyek", description: "Multi-kelas, multi-peran, dan pelaporan lengkap untuk institusi.", featured: true },
-                    { name: "Korporat", tagline: "Untuk akademi pelatihan internal perusahaan", price: null, currency: "IDR", period: "proyek", description: "Integrasi HRIS, SSO perusahaan, dan pelaporan kompetensi karyawan.", featured: false }
-                ],
-                cms: [
-                    { name: "Personal", tagline: "Untuk blog & website personal", price: 1500000, currency: "IDR", period: "proyek", description: "Satu website dengan fitur konten esensial.", featured: false },
-                    { name: "Business", tagline: "Paling populer untuk website perusahaan", price: 4500000, currency: "IDR", period: "proyek", description: "Multi-penulis, kategori konten, dan optimasi SEO lanjutan.", featured: true },
-                    { name: "Portal", tagline: "Untuk portal berita & konten berskala besar", price: null, currency: "IDR", period: "proyek", description: "Skala besar: multi-site, cache tingkat lanjut, dan API headless.", featured: false }
-                ],
-                "event-management": [
-                    { name: "Seminar", tagline: "Untuk seminar/workshop satu hari", price: 3000000, currency: "IDR", period: "event", description: "Pendaftaran, tiket, dan check-in untuk satu acara.", featured: false },
-                    { name: "Konferensi", tagline: "Paling populer untuk konferensi multi-sesi", price: 9000000, currency: "IDR", period: "event", description: "Multi-sesi, pembayaran online, dan laporan lengkap.", featured: true },
-                    { name: "Enterprise", tagline: "Untuk event besar & penyelenggara rutin", price: null, currency: "IDR", period: "event", description: "Kontrak tahunan multi-event dengan kustomisasi dan SLA.", featured: false }
-                ],
-                "point-of-sale": [
-                    { name: "Starter", tagline: "Untuk toko & kafe tunggal", price: 3500000, currency: "IDR", period: "lisensi", description: "Satu outlet dengan kasir, stok, dan laporan dasar.", featured: false },
-                    { name: "Business", tagline: "Paling populer untuk yang berkembang", price: 7500000, currency: "IDR", period: "lisensi", description: "Multi-kasir, barcode, dan laporan lanjutan untuk toko ramai.", featured: true },
-                    { name: "Enterprise", tagline: "Untuk banyak cabang & integrasi", price: null, currency: "IDR", period: "lisensi", description: "Multi-outlet terpusat dengan integrasi ke sistem lain.", featured: false }
-                ],
-                "company-profile": [
-                    { name: "Essential", tagline: "Untuk usaha yang baru membangun kehadiran online", price: 2500000, currency: "IDR", period: "proyek", description: "Website 5 halaman dengan desain profesional.", featured: false },
-                    { name: "Professional", tagline: "Paling populer untuk perusahaan yang serius branding", price: 5500000, currency: "IDR", period: "proyek", description: "Desain kustom + CMS agar konten dapat dikelola sendiri.", featured: true },
-                    { name: "Enterprise", tagline: "Untuk korporasi & grup usaha", price: null, currency: "IDR", period: "proyek", description: "Multi-bahasa, integrasi sistem internal, dan kebutuhan khusus lainnya.", featured: false }
-                ],
-                "landing-page": [
-                    { name: "Basic", tagline: "Untuk promo & kampanye tunggal", price: 1500000, currency: "IDR", period: "halaman", description: "Satu halaman konversi dengan copywriting dasar.", featured: false },
-                    { name: "Conversion", tagline: "Paling populer untuk peluncuran produk", price: 3500000, currency: "IDR", period: "halaman", description: "Copywriting penuh, social proof, dan optimasi kecepatan.", featured: true },
-                    { name: "Campaign Suite", tagline: "Untuk kampanye multi-audiens", price: null, currency: "IDR", period: "halaman", description: "Beberapa variasi halaman untuk pengujian audiens dan penawaran.", featured: false }
-                ],
-                "web-profile": [
-                    { name: "One Page", tagline: "Untuk personal brand & freelancer", price: 750000, currency: "IDR", period: "proyek", description: "Satu halaman profil yang memuat semuanya.", featured: false },
-                    { name: "Bisnis", tagline: "Paling populer untuk UMKM & toko", price: 1500000, currency: "IDR", period: "proyek", description: "Profil + katalog produk/jasa dengan tombol pesan per item.", featured: true },
-                    { name: "Plus", tagline: "Untuk bisnis yang butuh sedikit lebih", price: null, currency: "IDR", period: "proyek", description: "Katalog besar, galeri, atau kebutuhan khusus lainnya.", featured: false }
-                ],
-                "e-commerce": [
-                    { name: "Starter Store", tagline: "Untuk UMKM yang mulai jualan online", price: 6500000, currency: "IDR", period: "proyek", description: "Toko online ramping dengan fitur jualan esensial.", featured: false },
-                    { name: "Growth Store", tagline: "Paling populer untuk brand yang bertumbuh", price: 15000000, currency: "IDR", period: "proyek", description: "Katalog besar, promo, dan ongkir otomatis penuh.", featured: true },
-                    { name: "Commerce Suite", tagline: "Untuk operasional omnichannel", price: null, currency: "IDR", period: "proyek", description: "Multi-gudang, marketplace sync, dan integrasi ERP.", featured: false }
-                ],
-                "undangan-digital": [
-                    { name: "Basic", tagline: "Untuk undangan sederhana & elegan", price: 350000, currency: "IDR", period: "undangan", description: "Satu desain template dengan fitur inti undangan digital.", featured: false },
-                    { name: "Premium", tagline: "Paling populer untuk pernikahan", price: 750000, currency: "IDR", period: "undangan", description: "Personalisasi penuh dengan RSVP lengkap dan live streaming.", featured: true },
-                    { name: "Custom", tagline: "Desain khusus sesuai konsep acara", price: null, currency: "IDR", period: "undangan", description: "Undangan dibuat dari nol mengikuti konsep dan identitas acara Anda.", featured: false }
-                ]
-            };
-
-            const faqs = {
-                erp: [
-                    { q: "Apakah bisa diakses dari beberapa cabang?", a: "Bisa. ERP berbasis web sehingga setiap cabang cukup membuka browser dengan akun masing-masing." },
-                    { q: "Apakah data kami bisa di-migrate dari Excel?", a: "Ya. Tim kami membantu migrasi data master dan saldo awal dari Excel atau software lama." },
-                    { q: "Apakah ada biaya bulanan?", a: "Paket Starter dan Business adalah pembelian sekali proyek. Biaya tahunan hanya untuk hosting, maintenance, dan update." },
-                    { q: "Bagaimana dengan keamanan data?", a: "Data dienkripsi saat transit, backup otomatis harian, dan setiap aktivitas pengguna tercatat pada audit trail." }
-                ],
-                simrs: [
-                    { q: "Apakah sudah sesuai standar SATUSEHAT?", a: "Ya. SIMRS kami mengikuti standar interoperabilitas SATUSEHAT (FHIR) dan terus menyesuaikan setiap ada pembaruan regulasi Kemenkes." },
-                    { q: "Apakah bisa bridging dengan BPJS?", a: "Bisa. Tersedia bridging VClaim untuk verifikasi eligibilitas, SEP, dan pengajuan klaim." },
-                    { q: "Bagaimana bila internet mati?", a: "Tersedia mode offline untuk unit pelayanan kritis; data akan tersinkron otomatis begitu koneksi kembali normal." },
-                    { q: "Berapa lama implementasi sampai go-live?", a: "Umumnya 8-12 minggu tergantung jumlah unit dan kesiapan data master." }
-                ],
-                lms: [
-                    { q: "Apakah peserta perlu install aplikasi?", a: "Tidak. LMS berbasis web dan responsif, sehingga bisa dipakai dari browser HP maupun laptop." },
-                    { q: "Apakah mendukung materi video dari YouTube?", a: "Mendukung. Video dapat diunggah langsung atau disematkan dari YouTube/Vimeo." },
-                    { q: "Bagaimana mencegah kecurangan saat ujian?", a: "Tersedia acak urutan soal, timer per soal, pembatasan tab, dan rekap log aktivitas peserta." },
-                    { q: "Apakah sertifikat bisa memakai logo kami?", a: "Bisa. Template sertifikat memakai logo, tanda tangan, dan nomor seri sesuai identitas institusi." }
-                ],
-                cms: [
-                    { q: "Apakah perlu keahlian coding?", a: "Tidak. Editor visual memungkinkan Anda menulis, memformat, dan menyisipkan gambar seperti di pengolah kata." },
-                    { q: "Apakah bisa lebih dari satu penulis?", a: "Bisa. Tersedia peran Admin, Editor, dan Penulis dengan hak akses berbeda." },
-                    { q: "Bagaimana dengan performa website?", a: "CMS dilengkapi cache halaman, optimasi gambar otomatis, dan struktur HTML bersih." },
-                    { q: "Apakah konten lama bisa dipindahkan?", a: "Bisa. Artikel, gambar, dan struktur kategori dari WordPress/sistem lama dapat dimigrasikan." }
-                ],
-                "event-management": [
-                    { q: "Apakah peserta harus install aplikasi?", a: "Tidak. Pendaftaran dan e-tiket berbasis web; QR check-in cukup di-scan dari kamera HP." },
-                    { q: "Bagaimana uang tiket masuk ke mana?", a: "Pembayaran masuk langsung ke rekening/merchant Anda via payment gateway." },
-                    { q: "Apakah bisa untuk event multi-hari?", a: "Bisa. Jadwal sesi per hari dan per ruangan dapat diatur, termasuk kuota dan absensi per sesi." },
-                    { q: "Bagaimana bila peserta transfer tetapi belum konfirmasi?", a: "Status pembayaran diperbarui otomatis oleh webhook gateway; panitia juga bisa memverifikasi manual." }
-                ],
-                "point-of-sale": [
-                    { q: "Apakah bisa dipakai tanpa internet?", a: "Bisa. Mode offline menyimpan transaksi secara lokal dan menyinkronkannya otomatis." },
-                    { q: "Printer struk apa yang didukung?", a: "Printer thermal 58mm/80mm melalui USB maupun Bluetooth (ESC/POS)." },
-                    { q: "Ke mana data penjualan disimpan?", a: "Tersimpan di perangkat Anda dan di-backup harian ke cloud pada paket Business." },
-                    { q: "Berapa lama sistem siap dipakai?", a: "Konfigurasi awal 1-2 hari untuk satu outlet; pelatihan kasir umumnya selesai dalam satu hari." }
-                ],
-                "company-profile": [
-                    { q: "Berapa lama pengerjaannya?", a: "Umumnya 2-3 minggu sejak materi lengkap." },
-                    { q: "Apakah saya bisa update konten sendiri?", a: "Ya, pada paket Professional ke atas. CMS disertakan sehingga Anda bisa mengubah konten sendiri." },
-                    { q: "Apakah domain dan hosting disediakan?", a: "Ya, domain .com dan hosting 1 tahun sudah termasuk di semua paket." },
-                    { q: "Bagaimana kalau sudah punya website lama?", a: "Kami bisa membangun ulang sekaligus memigrasikan konten penting dan memasang redirect." }
-                ],
-                "landing-page": [
-                    { q: "Apa bedanya dengan website biasa?", a: "Website punya banyak tujuan; landing page punya satu tujuan konversi." },
-                    { q: "Apakah copywriting disediakan?", a: "Ya, pada paket Conversion ke atas copywriting penjualan disusun dari riset produk dan audiens." },
-                    { q: "Leads masuk ke mana?", a: "Notifikasi langsung ke WhatsApp/email tim Anda; data leads juga tersimpan dan bisa diekspor." },
-                    { q: "Apakah bisa dipakai untuk A/B test iklan?", a: "Bisa, terutama paket Campaign Suite: beberapa varian halaman untuk menguji pesan berbeda." }
-                ],
-                "web-profile": [
-                    { q: "Apakah perlu bisa komputer dulu?", a: "Tidak perlu. Anda cukup kirim materi via WhatsApp; susun halaman kami yang kerjakan." },
-                    { q: "1 minggu benar-benar jadi?", a: "Ya, selama materi lengkap. Rata-rata website tayang 3-5 hari kerja setelah materi diterima." },
-                    { q: "Kalau nanti mau upgrade ke website besar?", a: "Sangat bisa. Struktur konten disusun agar mudah dikembangkan menjadi company profile atau toko online." },
-                    { q: "Apakah ada biaya bulanan?", a: "Tidak ada. Yang ada hanya perpanjangan domain & hosting tahunan." }
-                ],
-                "e-commerce": [
-                    { q: "Uang penjualan masuk ke mana?", a: "Langsung ke rekening/merchant Anda via payment gateway." },
-                    { q: "Apakah bisa sinkron dengan marketplace?", a: "Bisa, pada paket Commerce Suite: stok dan pesanan marketplace tersinkron agar tidak oversell." },
-                    { q: "Bagaimana pengelolaan stok?", a: "Stok berkurang otomatis saat pesanan masuk; ada peringatan stok minimum." },
-                    { q: "Apakah pembeli perlu daftar akun?", a: "Tersedia checkout sebagai guest. Namun akun pelanggan memberi kemudahan lacak pesanan." }
-                ],
-                "undangan-digital": [
-                    { q: "Berapa lama pengerjaannya?", a: "2-5 hari kerja setelah materi lengkap." },
-                    { q: "Apakah tamu wajib mengisi RSVP?", a: "Tidak wajib — namun form RSVP membuat Anda tahu jumlah kehadiran." },
-                    { q: "Bisa menggunakan foto dan musik sendiri?", a: "Bisa. Kirimkan file-nya dan kami masukkan." },
-                    { q: "Bagaimana cara membagikannya kepada tamu?", a: "Berupa tautan yang bisa langsung dibagikan lewat WhatsApp, dipindai sebagai QR code." }
-                ]
-            };
-
-            // Bangun tabel-tabel relasional
-            const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
-            // 1. Tabel products
-            const productsTable = {
-                name: "products",
-                columns: [
-                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                    { name: "slug", type: "VARCHAR", length: "100", pk: false, ai: false, notNull: true, defaultValue: "" },
-                    { name: "name", type: "VARCHAR", length: "200", pk: false, ai: false, notNull: true, defaultValue: "" },
-                    { name: "short_name", type: "VARCHAR", length: "100", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "category", type: "VARCHAR", length: "50", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "tagline", type: "VARCHAR", length: "300", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "headline", type: "VARCHAR", length: "300", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "description", type: "TEXT", length: "", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "is_demo", type: "BOOLEAN", length: "", pk: false, ai: false, notNull: false, defaultValue: "0" },
-                    { name: "url_demo", type: "VARCHAR", length: "300", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "icon", type: "VARCHAR", length: "50", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "color", type: "VARCHAR", length: "10", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "highlights", type: "TEXT", length: "", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "created_at", type: "DATETIME", length: "", pk: false, ai: false, notNull: true, defaultValue: "CURRENT_TIMESTAMP" }
-                ],
-                rows: products.map((p, i) => ({
-                    id: i + 1,
-                    slug: p.slug,
-                    name: p.name,
-                    short_name: p.shortName,
-                    category: p.category,
-                    tagline: p.tagline,
-                    headline: p.headline,
-                    description: p.description,
-                    is_demo: p.isDemo ? "1" : "0",
-                    url_demo: p.urlDemo,
-                    icon: p.icon,
-                    color: p.color,
-                    highlights: p.highlights,
-                    created_at: now
-                }))
-            };
-
-            // 2. Tabel product_features
-            const featuresTable = {
-                name: "product_features",
-                columns: [
-                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                    { name: "product_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                    { name: "icon", type: "VARCHAR", length: "50", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "title", type: "VARCHAR", length: "150", pk: false, ai: false, notNull: true, defaultValue: "" },
-                    { name: "description", type: "TEXT", length: "", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "sort_order", type: "INT", length: "11", pk: false, ai: false, notNull: false, defaultValue: "0" }
-                ],
-                rows: []
-            };
-            let featId = 1;
-            products.forEach((p, i) => {
-                (features[p.slug] || []).forEach((f, fi) => {
-                    featuresTable.rows.push({
-                        id: featId++,
-                        product_id: i + 1,
-                        icon: f.icon,
-                        title: f.title,
-                        description: f.desc,
-                        sort_order: fi + 1
-                    });
-                });
-            });
-
-            // 3. Tabel product_pricing_plans
-            const pricingTable = {
-                name: "product_pricing_plans",
-                columns: [
-                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                    { name: "product_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                    { name: "name", type: "VARCHAR", length: "100", pk: false, ai: false, notNull: true, defaultValue: "" },
-                    { name: "tagline", type: "VARCHAR", length: "200", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "price", type: "DECIMAL", length: "15,2", pk: false, ai: false, notNull: false, defaultValue: "NULL" },
-                    { name: "currency", type: "VARCHAR", length: "10", pk: false, ai: false, notNull: false, defaultValue: "IDR" },
-                    { name: "period", type: "VARCHAR", length: "30", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "description", type: "TEXT", length: "", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "is_featured", type: "BOOLEAN", length: "", pk: false, ai: false, notNull: false, defaultValue: "0" }
-                ],
-                rows: []
-            };
-            let planId = 1;
-            products.forEach((p, i) => {
-                (pricingPlans[p.slug] || []).forEach(pp => {
-                    pricingTable.rows.push({
-                        id: planId++,
-                        product_id: i + 1,
-                        name: pp.name,
-                        tagline: pp.tagline,
-                        price: pp.price !== null ? String(pp.price) : "",
-                        currency: pp.currency,
-                        period: pp.period,
-                        description: pp.description,
-                        is_featured: pp.featured ? "1" : "0"
-                    });
-                });
-            });
-
-            // 4. Tabel product_faqs
-            const faqsTable = {
-                name: "product_faqs",
-                columns: [
-                    { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" },
-                    { name: "product_id", type: "INT", length: "11", pk: false, ai: false, notNull: true, defaultValue: "" },
-                    { name: "question", type: "VARCHAR", length: "300", pk: false, ai: false, notNull: true, defaultValue: "" },
-                    { name: "answer", type: "TEXT", length: "", pk: false, ai: false, notNull: false, defaultValue: "" },
-                    { name: "sort_order", type: "INT", length: "11", pk: false, ai: false, notNull: false, defaultValue: "0" }
-                ],
-                rows: []
-            };
-            let faqId = 1;
-            products.forEach((p, i) => {
-                (faqs[p.slug] || []).forEach((f, fi) => {
-                    faqsTable.rows.push({
-                        id: faqId++,
-                        product_id: i + 1,
-                        question: f.q,
-                        answer: f.a,
-                        sort_order: fi + 1
-                    });
-                });
-            });
-
-            // Tambahkan ke database aktif (replace jika sudah ada)
-            const newTables = [productsTable, featuresTable, pricingTable, faqsTable];
-            newTables.forEach(tbl => {
-                const existingIdx = db.tables.findIndex(t => t.name === tbl.name);
-                if (existingIdx >= 0) {
-                    db.tables[existingIdx] = tbl;
-                } else {
-                    db.tables.push(tbl);
-                }
-            });
-
-            db.activeTableIndex = db.tables.findIndex(t => t.name === "products");
-            saveToLocalStorage();
-            renderAllUI();
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Kafeinarts Products Dimuat!',
-                html: `
-                    <div class="text-start fs-8">
-                        <div><i class="bi bi-database-check text-primary me-2"></i> Database: <b>${db.name}</b></div>
-                        <div><i class="bi bi-table text-success me-2"></i> Tabel: <b>products, product_features, product_pricing_plans, product_faqs</b></div>
-                        <div><i class="bi bi-grid-3x3-gap text-warning me-2"></i> Total Records: <b>${productsTable.rows.length} produk, ${featuresTable.rows.length} fitur, ${pricingTable.rows.length} paket harga, ${faqsTable.rows.length} FAQ</b></div>
-                    </div>
-                `,
-                confirmButtonColor: '#6200ee'
-            });
-        }
-
-        function renderAllUI() {
-            renderActiveDatabaseHeader();
-            renderSidebarTables();
-            renderColumnsTable();
-            renderDataGrid();
-            initDataGridDelegation();
-            updateHeaderTitle();
-            updateSQLPreview();
-        }
-
-        function renderActiveDatabaseHeader() {
-            const db = getCurrentDatabase();
-            const dbName = db ? db.name : "None";
-            document.getElementById("active-db-name-label").innerText = dbName;
-            document.getElementById("header-db-badge").innerText = `DB: ${dbName}`;
-        }
-
-        function renderSidebarTables() {
-            const container = document.getElementById("tables-list-container");
-            container.innerHTML = "";
-
-            const db = getCurrentDatabase();
-            if (!db || !db.tables || db.tables.length === 0) {
-                container.innerHTML = `<div class="text-center text-white-50 fs-8 py-3">Belum ada tabel di DB ini</div>`;
-                return;
-            }
-
-            db.tables.forEach((tbl, idx) => {
-                const isActive = idx === db.activeTableIndex;
-                const div = document.createElement("div");
-                div.className = `table-list-item ${isActive ? 'active' : ''}`;
-                div.onclick = () => {
-                    db.activeTableIndex = idx;
-                    saveToLocalStorage();
-                    renderAllUI();
-                    toggleMobileSidebar(false);
-                };
-
-                div.innerHTML = `
-                    <div class="d-flex align-items-center gap-2 text-truncate">
-                        <i class="bi bi-table"></i>
-                        <span class="text-truncate">${escapeHtml(tbl.name)}</span>
-                    </div>
-                    <div class="d-flex gap-2 align-items-center" onclick="event.stopPropagation();">
-                        <i class="bi bi-pencil-square hover-icon text-white-50" title="Ubah Nama" onclick="renameTablePrompt(${idx})"></i>
-                        <i class="bi bi-trash hover-icon text-danger-subtle" title="Hapus" onclick="deleteTablePrompt(${idx})"></i>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function updateHeaderTitle() {
-            const table = getCurrentTable();
-            if (table) {
-                document.getElementById("current-table-title").innerText = `Tabel: ${table.name}`;
-                document.getElementById("table-row-count-badge").innerText = `${table.rows.length} Record(s)`;
-            } else {
-                document.getElementById("current-table-title").innerText = "Belum Ada Tabel";
-                document.getElementById("table-row-count-badge").innerText = "0 Rows";
-            }
-        }
-
-        // DATABASE CRUD
-        function promptCreateDatabase() {
-            Swal.fire({
-                title: 'Database Baru',
-                input: 'text',
-                inputLabel: 'Nama Database (contoh: db_akuntansi)',
-                inputPlaceholder: 'db_nama',
-                showCancelButton: true,
-                confirmButtonText: 'Buat Database',
-                inputValidator: (val) => {
-                    if (!val || !val.trim()) return 'Nama DB tidak boleh kosong!';
-                    if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(val.trim())) return 'Format nama tidak valid!';
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const dbName = result.value.trim().toLowerCase();
-                    appState.databases.push({
-                        name: dbName,
-                        activeTableIndex: 0,
-                        tables: []
-                    });
-                    appState.activeDbIndex = appState.databases.length - 1;
-                    saveToLocalStorage();
-                    renderAllUI();
-                    Swal.fire('Sukses', `Database '${dbName}' dibuat!`, 'success');
-                }
-            });
-        }
-
-        function promptSelectDatabase() {
-            const options = {};
-            appState.databases.forEach((db, idx) => {
-                options[idx] = `${db.name} (${db.tables.length} tabel)`;
-            });
-
-            Swal.fire({
-                title: 'Pilih Database Target',
-                input: 'select',
-                inputOptions: options,
-                inputValue: appState.activeDbIndex,
-                showCancelButton: true,
-                confirmButtonText: 'Buka Database'
-            }).then((result) => {
-                if (result.isConfirmed && result.value !== undefined) {
-                    appState.activeDbIndex = parseInt(result.value);
-                    saveToLocalStorage();
-                    renderAllUI();
-                }
-            });
-        }
-
-        // TABLE CRUD
-        function addNewTablePrompt() {
-            const db = getCurrentDatabase();
-            if (!db) return;
-
-            Swal.fire({
-                title: 'Tambah Tabel Baru',
-                input: 'text',
-                inputLabel: `Akan ditambahkan ke '${db.name}'`,
-                inputPlaceholder: 'nama_tabel',
-                showCancelButton: true,
-                confirmButtonText: 'Buat Tabel',
-                inputValidator: (val) => {
-                    if (!val || !val.trim()) return 'Nama tabel tidak boleh kosong!';
-                    if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(val.trim())) return 'Gunakan format nama valid';
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const tableName = result.value.trim().toLowerCase();
-                    db.tables.push({
-                        name: tableName,
-                        columns: [
-                            { name: "id", type: "INT", length: "11", pk: true, ai: true, notNull: true, defaultValue: "" }
-                        ],
-                        rows: []
-                    });
-                    db.activeTableIndex = db.tables.length - 1;
-                    saveToLocalStorage();
-                    renderAllUI();
-                }
-            });
-        }
-
-        function renameTablePrompt(idx) {
-            const db = getCurrentDatabase();
-            if (!db) return;
-            const tbl = db.tables[idx];
-
-            Swal.fire({
-                title: 'Ubah Nama Tabel',
-                input: 'text',
-                inputValue: tbl.name,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan'
-            }).then((res) => {
-                if (res.isConfirmed && res.value.trim()) {
-                    tbl.name = res.value.trim().toLowerCase();
-                    saveToLocalStorage();
-                    renderAllUI();
-                }
-            });
-        }
-
-        function deleteTablePrompt(idx) {
-            const db = getCurrentDatabase();
-            if (!db) return;
-
-            Swal.fire({
-                title: 'Hapus Tabel?',
-                text: `Hapus tabel '${db.tables[idx].name}'?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Hapus'
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    db.tables.splice(idx, 1);
-                    db.activeTableIndex = Math.max(0, db.activeTableIndex - 1);
-                    saveToLocalStorage();
-                    renderAllUI();
-                }
-            });
-        }
-
-        function resetAllData() {
-            Swal.fire({
-                title: 'Reset Seluruh Database?',
-                text: 'Semua database, tabel, dan data akan dihapus!',
-                icon: 'error',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Ya, Reset'
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    appState = { activeDbIndex: 0, databases: [] };
-                    saveToLocalStorage();
-                    renderAllUI();
-                }
-            });
-        }
-
-        function renderColumnsTable() {
-            const tbody = document.getElementById("columns-table-body");
-            tbody.innerHTML = "";
-
-            const table = getCurrentTable();
-            if (!table) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">Pilih atau buat tabel terlebih dahulu.</td></tr>`;
-                return;
-            }
-
-            table.columns.forEach((col, colIdx) => {
-                const tr = document.createElement("tr");
-
-                const typeOptions = DATA_TYPES.map(t => 
-                    `<option value="${t}" ${col.type === t ? 'selected' : ''}>${t}</option>`
-                ).join("");
-
-                tr.innerHTML = `
-                    <td>
-                        <input type="text" class="form-control form-control-sm fw-medium rounded-2" value="${escapeHtml(col.name)}"
-                            onchange="updateColumnField(${colIdx}, 'name', this.value)">
-                    </td>
-                    <td>
-                        <select class="form-select form-select-sm rounded-2" onchange="updateColumnField(${colIdx}, 'type', this.value)">
-                            ${typeOptions}
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm rounded-2" value="${escapeHtml(col.length || '')}" placeholder="11 / 255"
-                            onchange="updateColumnField(${colIdx}, 'length', this.value)">
-                    </td>
-                    <td class="text-center">
-                        <input type="checkbox" class="form-check-input" ${col.pk ? 'checked' : ''}
-                            onchange="updateColumnField(${colIdx}, 'pk', this.checked)">
-                    </td>
-                    <td class="text-center">
-                        <input type="checkbox" class="form-check-input" ${col.ai ? 'checked' : ''}
-                            onchange="updateColumnField(${colIdx}, 'ai', this.checked)">
-                    </td>
-                    <td class="text-center">
-                        <input type="checkbox" class="form-check-input" ${col.notNull ? 'checked' : ''}
-                            onchange="updateColumnField(${colIdx}, 'notNull', this.checked)">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm rounded-2" value="${escapeHtml(col.defaultValue || '')}" placeholder="NULL / Value"
-                            onchange="updateColumnField(${colIdx}, 'defaultValue', this.value)">
-                    </td>
-                    <td class="text-center">
-                        <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteColumn(${colIdx})" title="Hapus Kolom">
-                            <i class="bi bi-x-circle-fill fs-6"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function updateColumnField(colIdx, key, value) {
-            const table = getCurrentTable();
-            if (!table) return;
-
-            const oldName = table.columns[colIdx].name;
-            table.columns[colIdx][key] = value;
-
-            if (key === 'name' && oldName !== value) {
-                table.rows.forEach(r => {
-                    r[value] = r[oldName];
-                    delete r[oldName];
-                });
-                renderDataGrid();
-            }
-
-            saveToLocalStorage();
-            updateSQLPreview();
-        }
-
-        function addColumnRow() {
-            const table = getCurrentTable();
-            if (!table) return;
-
-            const newColName = `col_${table.columns.length + 1}`;
-            table.columns.push({
-                name: newColName,
-                type: "VARCHAR",
-                length: "100",
-                pk: false,
-                ai: false,
-                notNull: false,
-                defaultValue: ""
-            });
-
-            table.rows.forEach(r => r[newColName] = "");
-
-            saveToLocalStorage();
-            renderColumnsTable();
-            renderDataGrid();
-            updateSQLPreview();
-        }
-
-        function addStandardIDColumn() {
-            const table = getCurrentTable();
-            if (!table) return;
-
-            const hasPK = table.columns.some(c => c.pk);
-            if (hasPK) {
-                Swal.fire('Info', 'Tabel ini sudah memiliki Primary Key.', 'info');
-                return;
-            }
-
-            table.columns.unshift({
-                name: "id",
-                type: "INT",
-                length: "11",
-                pk: true,
-                ai: true,
-                notNull: true,
-                defaultValue: ""
-            });
-
-            saveToLocalStorage();
-            renderColumnsTable();
-            renderDataGrid();
-            updateSQLPreview();
-        }
-
-        function deleteColumn(colIdx) {
-            const table = getCurrentTable();
-            if (!table) return;
-
-            const colName = table.columns[colIdx].name;
-            table.columns.splice(colIdx, 1);
-
-            table.rows.forEach(r => delete r[colName]);
-
-            saveToLocalStorage();
-            renderColumnsTable();
-            renderDataGrid();
-            updateSQLPreview();
-        }
-
-        function renderDataGrid() {
-            const thead = document.getElementById("data-table-head");
-            const tbody = document.getElementById("data-table-body");
-            thead.innerHTML = "";
-            tbody.innerHTML = "";
-
-            const table = getCurrentTable();
-            if (!table || table.columns.length === 0) {
-                tbody.innerHTML = `<tr><td class="text-center text-muted py-4">Belum ada kolom. Tambahkan di tab Structure.</td></tr>`;
-                return;
-            }
-
-            let headerHTML = "<tr><th style='width: 40px;' class='text-center'>#</th>";
-            table.columns.forEach(col => {
-                headerHTML += `
-                    <th style="min-width: 130px;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <span>${escapeHtml(col.name)} ${col.pk ? '<i class="bi bi-key-fill text-warning ms-1"></i>' : ''}</span>
-                            <span class="badge bg-secondary-subtle text-secondary font-monospace fw-normal fs-8">${escapeHtml(col.type)}</span>
-                        </div>
-                    </th>
-                `;
-            });
-            headerHTML += "<th style='width: 50px;' class='text-center'>Aksi</th></tr>";
-            thead.innerHTML = headerHTML;
-
-            if (table.rows.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="${table.columns.length + 2}" class="text-center text-muted py-4">Belum ada record data. Gunakan Smart Bulk Fill.</td></tr>`;
-                return;
-            }
-
-            table.rows.forEach((row, rowIdx) => {
-                const tr = document.createElement("tr");
-                let rowHTML = `<td class="text-center fw-bold text-muted fs-8">${rowIdx + 1}</td>`;
-
-                table.columns.forEach(col => {
-                    const cellVal = row[col.name] !== undefined ? row[col.name] : "";
-                    rowHTML += `
-                        <td>
-                            <input type="text" class="form-control form-control-sm border-0 bg-transparent p-1 fs-8 data-cell-input"
-                                value="${escapeHtml(cellVal)}"
-                                data-row-idx="${rowIdx}" data-col-name="${escapeHtml(col.name)}">
-                        </td>
-                    `;
-                });
-
-                rowHTML += `
-                    <td class="text-center">
-                        <button class="btn btn-sm btn-link text-danger p-0 data-del-row" data-row-idx="${rowIdx}">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tr.innerHTML = rowHTML;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // Event delegation untuk data grid (menghindari inline handler yang rentan)
-        function initDataGridDelegation() {
-            const tbody = document.getElementById("data-table-body");
-            if (!tbody || tbody.dataset.delegationBound === "true") return;
-            tbody.dataset.delegationBound = "true";
-
-            tbody.addEventListener("change", function(e) {
-                const input = e.target.closest(".data-cell-input");
-                if (!input) return;
-                updateRowCellValue(
-                    parseInt(input.dataset.rowIdx),
-                    input.dataset.colName,
-                    input.value
-                );
-            });
-
-            tbody.addEventListener("click", function(e) {
-                const btn = e.target.closest(".data-del-row");
-                if (!btn) return;
-                deleteDataRow(parseInt(btn.dataset.rowIdx));
-            });
-        }
-
-        function updateRowCellValue(rowIdx, colName, value) {
-            const table = getCurrentTable();
-            if (table && table.rows[rowIdx]) {
-                table.rows[rowIdx][colName] = value;
-                saveToLocalStorage();
-                updateSQLPreview();
-            }
-        }
-
-        function addDataRow() {
-            const table = getCurrentTable();
-            if (!table) return;
-
-            const newRow = {};
-            table.columns.forEach(col => {
-                if (col.ai) {
-                    const existingMax = table.rows.reduce((max, r) => Math.max(max, parseInt(r[col.name]) || 0), 0);
-                    newRow[col.name] = existingMax + 1;
-                } else if (col.defaultValue) {
-                    newRow[col.name] = col.defaultValue;
-                } else {
-                    newRow[col.name] = "";
-                }
-            });
-
-            table.rows.push(newRow);
-            saveToLocalStorage();
-            renderDataGrid();
-            updateHeaderTitle();
-            updateSQLPreview();
-        }
-
-        function deleteDataRow(rowIdx) {
-            const table = getCurrentTable();
-            if (!table) return;
-
-            table.rows.splice(rowIdx, 1);
-            saveToLocalStorage();
-            renderDataGrid();
-            updateHeaderTitle();
-            updateSQLPreview();
-        }
-
-        function clearAllRows() {
-            const table = getCurrentTable();
-            if (!table) return;
-
-            Swal.fire({
-                title: 'Kosongkan Records?',
-                text: `Hapus seluruh ${table.rows.length} baris data?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Kosongkan'
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    table.rows = [];
-                    saveToLocalStorage();
-                    renderDataGrid();
-                    updateHeaderTitle();
-                    updateSQLPreview();
-                }
-            });
-        }
-
-        // SMART BULK FILL ENGINE
-        function openBulkFillModal() {
-            const table = getCurrentTable();
-            if (!table) return;
-
-            Swal.fire({
-                title: 'Smart Bulk Fill Data',
-                html: `
-                    <div class="text-start fs-8 text-muted mb-3">Otomatis generate data dummy realistis berdasarkan tipe data kolom.</div>
-                    <div class="mb-3 text-start">
-                        <label class="form-label fw-bold fs-8">Jumlah Baris:</label>
-                        <input type="number" id="bulk-count-input" class="form-control" value="10" min="1" max="5000">
-                    </div>
-                    <div class="form-check text-start">
-                        <input class="form-check-input" type="checkbox" id="bulk-append-check" checked>
-                        <label class="form-check-label fs-8" for="bulk-append-check">Tambahkan ke data yang sudah ada (Append)</label>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Generate Data',
-                preConfirm: () => {
-                    const count = parseInt(document.getElementById('bulk-count-input').value) || 10;
-                    const isAppend = document.getElementById('bulk-append-check').checked;
-                    return { count, isAppend };
-                }
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    executeBulkFill(res.value.count, res.value.isAppend);
-                }
-            });
-        }
-
-        function executeBulkFill(count, isAppend) {
-            const table = getCurrentTable();
-            if (!table) return;
-
-            if (!isAppend) table.rows = [];
-
-            let startAutoId = table.rows.length + 1;
-
-            for (let i = 0; i < count; i++) {
-                const row = {};
-                table.columns.forEach(col => {
-                    row[col.name] = generateSmartColumnValue(col, startAutoId + i);
-                });
-                table.rows.push(row);
-            }
-
-            saveToLocalStorage();
-            renderDataGrid();
-            updateHeaderTitle();
-            updateSQLPreview();
-
-            Swal.fire('Berhasil!', `${count} baris data berhasil ditambahkan.`, 'success');
-        }
-
-        function generateSmartColumnValue(col, currentId) {
-            const colName = col.name.toLowerCase();
-            const colType = col.type.toUpperCase();
-
-            if (col.ai) return currentId;
-
-            // --- Deteksi pola nama kolom (POS-aware) ---
-            if (colName.includes('nama') || colName.includes('name')) return getRandomElement(MOCK_NAMES);
-            if (colName.includes('email')) {
-                const slug = getRandomElement(MOCK_NAMES).toLowerCase().replace(/\s+/g, '.');
-                return `${slug}${Math.floor(Math.random()*90 + 10)}@${getRandomElement(MOCK_DOMAINS)}`;
-            }
-            if (colName.includes('kota') || colName.includes('city')) return getRandomElement(MOCK_CITIES);
-            if (colName.includes('alamat') || colName.includes('address')) return getRandomElement(MOCK_ADDRESSES);
-            if (colName.includes('telepon') || colName.includes('phone') || colName.includes('telp') || colName.includes('hp')) {
-                return `08${Math.floor(Math.random() * 900000000 + 100000000)}`;
-            }
-            if (colName.includes('sku')) {
-                return `SKU-${getRandomElement(MOCK_BRANDS).substring(0, 3).toUpperCase()}-${Math.floor(Math.random() * 9000 + 1000)}`;
-            }
-            if (colName.includes('barcode') || colName.includes('ean') || colName.includes('upc')) {
-                return `${Math.floor(Math.random() * 9000000000000 + 1000000000000)}`;
-            }
-            if (colName.includes('kategori') || colName.includes('category')) return getRandomElement(MOCK_CATEGORIES);
-            if (colName.includes('brand') || colName.includes('merek')) return getRandomElement(MOCK_BRANDS);
-            if (colName.includes('produk') || colName.includes('item')) return getRandomElement(MOCK_PRODUCTS);
-            if (colName.includes('harga') || colName.includes('price')) return Math.floor(Math.random() * 500 + 10) * 1000;
-            if (colName.includes('stok') || colName.includes('qty')) return Math.floor(Math.random() * 90 + 10);
-            if (colName.includes('diskon') || colName.includes('discount')) return Math.floor(Math.random() * 30);
-            if (colName.includes('payment') || colName.includes('pembayaran') || colName.includes('metode')) return getRandomElement(MOCK_PAYMENT_METHODS);
-            if (colName.includes('status')) return getRandomElement(MOCK_TXN_STATUS);
-            if (colName.includes('kasir') || colName.includes('staff') || colName.includes('pegawai') || colName.includes('employee')) return getRandomElement(MOCK_STAFF);
-            if (colName.includes('total')) return Math.floor(Math.random() * 50 + 5) * 10000;
-            if (colName.includes('jumlah') || colName.includes('quantity')) return Math.floor(Math.random() * 20 + 1);
-            if (colName.includes('tanggal') || colName.includes('date') || colName.includes('tgl')) {
-                const d = new Date(Date.now() - Math.floor(Math.random() * 10000000000));
-                return d.toISOString().slice(0, 10);
-            }
-            if (colName.includes('waktu') || colName.includes('time') || colName.includes('jam')) {
-                const dt = new Date(Date.now() - Math.floor(Math.random() * 10000000000));
-                return dt.toISOString().slice(11, 19);
-            }
-
-            switch (colType) {
-                case 'INT':
-                case 'BIGINT': return Math.floor(Math.random() * 1000 + 1);
-                case 'DECIMAL': return (Math.random() * 1000).toFixed(2);
-                case 'DATETIME': {
-                    const dt = new Date(Date.now() - Math.floor(Math.random() * 10000000000));
-                    return dt.toISOString().slice(0, 19).replace('T', ' ');
-                }
-                case 'DATE': {
-                    const d = new Date(Date.now() - Math.floor(Math.random() * 10000000000));
-                    return d.toISOString().slice(0, 10);
-                }
-                case 'BOOLEAN': return Math.random() > 0.5 ? "1" : "0";
-                default: return `Val_${col.name}_${Math.floor(Math.random() * 899 + 100)}`;
-            }
-        }
-
-        function getRandomElement(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
-
-        // Escape aman untuk konten HTML & attribute (mencegah broken DOM / XSS)
-        function escapeHtml(str) {
-            return String(str)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#39;");
-        }
-
-        // ==========================================
-        // D3.JS ERD VISUALIZER & MODAL EDITOR
-        // ==========================================
-        function renderD3ERD() {
-            const container = d3.select("#erd-canvas");
-            container.selectAll("*").remove(); // Bersihkan canvas sebelumnya
-
-            const db = getCurrentDatabase();
-            if (!db || !db.tables || db.tables.length === 0) {
-                container.html('<div class="d-flex align-items-center justify-content-center h-100 text-muted fs-8">Tidak ada tabel untuk visualisasi ERD.</div>');
-                return;
-            }
-
-            const canvasEl = document.getElementById("erd-canvas");
-            // Fallback berlapis: canvas -> parent -> default (saat display:none semuanya 0)
-            const width = canvasEl.clientWidth
-                || (canvasEl.parentElement ? canvasEl.parentElement.clientWidth : 0)
-                || 800;
-            const height = canvasEl.clientHeight
-                || (canvasEl.parentElement ? canvasEl.parentElement.clientHeight : 0)
-                || 500;
-
-            // Inisialisasi SVG Setup & Zoom
-            const svg = container.append("svg")
-                .attr("width", "100%")
-                .attr("height", height)
-                .style("background-color", "#0f172a")
-                .style("border-radius", "8px")
-                .call(d3.zoom().scaleExtent([0.2, 3]).on("zoom", (event) => {
-                    svgGroup.attr("transform", event.transform);
-                }))
-                .append("g");
-            
-            const svgGroup = svg;
-
-            // Map data tabel ke format node
-            const nodes = db.tables.map((t, i) => ({
-                id: i,
-                name: t.name,
-                columns: t.columns,
-                rowsCount: t.rows.length,
-                width: 230,
-                height: 45 + (t.columns.length * 28) + 30
-            }));
-
-            // Deteksi relasi sederhana (Foreign Key berbasis nama kolom berakhiran _id)
-            const links = [];
-            db.tables.forEach((t, i) => {
-                t.columns.forEach(c => {
-                    if (c.name.toLowerCase().endsWith('_id')) {
-                        const refName = c.name.substring(0, c.name.length - 3);
-                        // Cari tabel tujuan (baik singular/plural)
-                        let targetIdx = db.tables.findIndex(tbl => tbl.name === refName || tbl.name === refName + 's');
-                        if (targetIdx !== -1 && targetIdx !== i) {
-                            links.push({ source: i, target: targetIdx, label: c.name });
-                        }
-                    }
-                });
-            });
-
-            // Simulasi Fisik Force-Directed (Gaya Tarik-Menolak)
-            const simulation = d3.forceSimulation(nodes)
-                .force("link", d3.forceLink(links).id(d => d.id).distance(280))
-                .force("charge", d3.forceManyBody().strength(-2000)) // Menolak agar tidak bertumpuk
-                .force("center", d3.forceCenter(width / 2, height / 2))
-                .force("collide", d3.forceCollide().radius(180));
-
-            // Definisikan bentuk panah untuk garis relasi
-            svg.append("defs").append("marker")
-                .attr("id", "arrowhead")
-                .attr("viewBox", "-0 -5 10 10")
-                .attr("refX", 125) // Jarak panah dari pusat kotak
-                .attr("refY", 0)
-                .attr("orient", "auto")
-                .attr("markerWidth", 6)
-                .attr("markerHeight", 6)
-                .attr("xoverflow", "visible")
-                .append("svg:path")
-                .attr("d", "M 0,-5 L 10 ,0 L 0,5")
-                .attr("fill", "#94a3b8")
-                .style("stroke","none");
-
-            // Gambar Garis Penghubung (Links)
-            const link = svgGroup.append("g")
-                .selectAll("line")
-                .data(links)
-                .join("line")
-                .attr("stroke", "#64748b")
-                .attr("stroke-width", 2)
-                .attr("stroke-dasharray", "4,4") // Garis putus-putus
-                .attr("marker-end", "url(#arrowhead)");
-
-            // Gambar Kotak Tabel (Nodes menggunakan foreignObject HTML)
-            const node = svgGroup.append("g")
-                .selectAll(".node")
-                .data(nodes)
-                .join("foreignObject")
-                .attr("class", "node")
-                .attr("width", d => d.width)
-                .attr("height", d => d.height)
-                .call(d3.drag()
-                    .on("start", dragstarted)
-                    .on("drag", dragged)
-                    .on("end", dragended))
-                .on("click", (event, d) => {
-                    if (event.defaultPrevented) return; // Abaikan jika sedang men-drag
-                    openTableEditModal(d.id);
-                });
-
-            // Render UI Card Tabel (HTML di dalam SVG)
-            node.append("xhtml:div")
-                .style("width", "100%")
-                .style("height", "100%")
-                .style("border", "1px solid #334155")
-                .style("border-radius", "8px")
-                .style("background-color", "#1e293b")
-                .style("color", "#f8fafc")
-                .style("font-size", "12px")
-                .style("box-shadow", "0 6px 12px rgba(0,0,0,0.5)")
-                .style("cursor", "pointer")
-                .style("overflow", "hidden")
-                .html(d => `
-                    <div style="background-color: ${db.activeTableIndex === d.id ? '#6200ee' : '#334155'}; padding: 10px 12px; font-weight: bold; border-bottom: 1px solid #0f172a; display: flex; justify-content: space-between; align-items: center;">
-                        <span class="text-truncate"><i class="bi bi-table me-1"></i> ${escapeHtml(d.name)}</span>
-                        <i class="bi bi-pencil-square opacity-75" title="Klik untuk edit"></i>
-                    </div>
-                    <div style="padding: 8px 12px;">
-                        ${d.columns.map(c => `
-                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding: 5px 0;">
-                                <span>${c.pk ? '<i class="bi bi-key-fill text-warning me-1"></i>' : ''}${escapeHtml(c.name)}</span>
-                                <span class="text-secondary font-monospace" style="font-size:10px;">${escapeHtml(c.type)}</span>
-                            </div>
-                        `).join('')}
-                        <div class="mt-2 text-center fw-medium" style="font-size: 11px; color: #10b981;">
-                            <i class="bi bi-grid-3x3-gap"></i> ${d.rowsCount} Records
-                        </div>
-                    </div>
-                `);
-
-            // Update pergerakan titik (Tick)
-            simulation.on("tick", () => {
-                link
-                    .attr("x1", d => d.source.x)
-                    .attr("y1", d => d.source.y)
-                    .attr("x2", d => d.target.x)
-                    .attr("y2", d => d.target.y);
-
-                node
-                    .attr("x", d => d.x - d.width / 2) // Pusatkan kotak
-                    .attr("y", d => d.y - d.height / 2);
-            });
-
-            // Drag Functions
-            function dragstarted(event, d) {
-                if (!event.active) simulation.alphaTarget(0.3).restart();
-                d.fx = d.x; d.fy = d.y;
-            }
-            function dragged(event, d) {
-                d.fx = event.x; d.fy = event.y;
-            }
-            function dragended(event, d) {
-                if (!event.active) simulation.alphaTarget(0);
-                d.fx = null; d.fy = null;
-            }
-        }
-
-        // FUNGSI POPUP MODAL EDITOR DARI ERD
-        function openTableEditModal(tableIndex) {
-            const db = getCurrentDatabase();
-            if (!db) return;
-            const table = db.tables[tableIndex];
-
-            Swal.fire({
-                title: `<i class="bi bi-pencil-square text-primary me-2"></i>Edit Tabel`,
-                html: `
-                    <div class="text-start mb-4">
-                        <label class="form-label fs-8 fw-bold text-secondary">Ubah Nama Tabel</label>
-                        <input type="text" id="edit-tbl-name" class="form-control" value="${table.name}">
-                    </div>
-                    <div class="d-flex flex-column gap-2 text-start">
-                        <label class="form-label fs-8 fw-bold text-secondary mb-0">Tindakan Cepat:</label>
-                        <button id="btn-goto-cols" class="btn btn-outline-primary rounded-3 text-start"><i class="bi bi-list-columns me-2"></i> Edit Struktur Kolom (${table.columns.length})</button>
-                        <button id="btn-goto-data" class="btn btn-outline-success rounded-3 text-start"><i class="bi bi-grid-3x3-gap me-2"></i> Edit Baris Data (${table.rows.length})</button>
-                        <button id="btn-del-tbl" class="btn btn-outline-danger rounded-3 text-start mt-2"><i class="bi bi-trash me-2"></i> Hapus Tabel Ini</button>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan Perubahan',
-                cancelButtonText: 'Tutup',
-                confirmButtonColor: '#6200ee',
-                didOpen: () => {
-                    // Logic tombol navigasi cepat di dalam modal
-                    document.getElementById('btn-goto-cols').onclick = () => {
-                        Swal.close();
-                        db.activeTableIndex = tableIndex;
-                        saveToLocalStorage();
-                        renderAllUI();
-                        switchMobileTab('columns');
-                    };
-                    document.getElementById('btn-goto-data').onclick = () => {
-                        Swal.close();
-                        db.activeTableIndex = tableIndex;
-                        saveToLocalStorage();
-                        renderAllUI();
-                        switchMobileTab('data');
-                    };
-                    document.getElementById('btn-del-tbl').onclick = () => {
-                        Swal.close();
-                        deleteTablePrompt(tableIndex);
-                    };
-                }
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    const newName = document.getElementById('edit-tbl-name').value.trim().toLowerCase();
-                    if (newName && newName !== table.name) {
-                        table.name = newName;
-                        saveToLocalStorage();
-                        renderAllUI();
-                        renderD3ERD(); // Refresh 2D Canvas dengan nama baru
-                        Swal.fire({
-                            toast: true, position: 'top-end', icon: 'success', 
-                            title: 'Nama tabel diperbarui!', showConfirmButton: false, timer: 1500
-                        });
-                    }
-                }
-            });
-        }
-
-        function updateSQLPreview() {
-            const dialect = document.getElementById("sql-dialect-select").value;
-            const includeDB = document.getElementById("sql-include-db").checked;
-            const includeDrop = document.getElementById("sql-include-drop").checked;
-            const includeInsert = document.getElementById("sql-include-insert").checked;
-
-            const db = getCurrentDatabase();
-            if (!db) {
-                document.getElementById("sql-code-output").innerText = "-- Belum ada database.";
-                return;
-            }
-
-            let sqlScript = `-- SQL FILLER Export Studio\n`;
-            sqlScript += `-- Target Dialect: ${dialect.toUpperCase()}\n`;
-            sqlScript += `-- Timestamp: ${new Date().toLocaleString()}\n\n`;
-
-            if (includeDB) {
-                if (dialect === 'mssql') {
-                    sqlScript += `IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '${db.name}')\n  CREATE DATABASE [${db.name}];\nGO\n`;
-                } else if (dialect === 'postgresql') {
-                    sqlScript += `-- Buat database manual: CREATE DATABASE ${db.name};\n`;
-                } else if (dialect === 'sqlite') {
-                    sqlScript += `-- SQLite: database adalah file .db\n`;
-                } else {
-                    sqlScript += `CREATE DATABASE IF NOT EXISTS ${quoteIdentifier(db.name, dialect)};\n`;
-                    sqlScript += `USE ${quoteIdentifier(db.name, dialect)};\n\n`;
-                }
-            }
-
-            db.tables.forEach(table => {
-                if (includeDrop) {
-                    if (dialect === 'mssql') {
-                        sqlScript += `IF OBJECT_ID(N'${table.name}', N'U') IS NOT NULL DROP TABLE [${table.name}];\n`;
-                    } else {
-                        sqlScript += `DROP TABLE IF EXISTS ${quoteIdentifier(table.name, dialect)};\n`;
-                    }
-                }
-
-                sqlScript += `CREATE TABLE ${quoteIdentifier(table.name, dialect)} (\n`;
-
-                const colDefs = [];
-                const pkCols = [];
-
-                table.columns.forEach(col => {
-                    let def = `  ${quoteIdentifier(col.name, dialect)} ${formatDataType(col, dialect)}`;
-
-                    if (col.ai) {
-                        if (dialect === 'mysql') def += " AUTO_INCREMENT";
-                        else if (dialect === 'postgresql') def = `  ${quoteIdentifier(col.name, dialect)} SERIAL`;
-                        else if (dialect === 'mssql') def += " IDENTITY(1,1)";
-                        else if (dialect === 'sqlite') {
-                            // SQLite: AUTOINCREMENT hanya valid pada INTEGER PRIMARY KEY inline
-                            def = `  ${quoteIdentifier(col.name, dialect)} INTEGER PRIMARY KEY AUTOINCREMENT`;
-                            colDefs.push(def);
-                            return;
-                        }
-                    }
-
-                    if (col.notNull) def += " NOT NULL";
-
-                    if (col.defaultValue && !col.ai) {
-                        def += ` DEFAULT ${formatDefaultValue(col.defaultValue)}`;
-                    }
-
-                    if (col.pk && dialect !== 'sqlite') {
-                        pkCols.push(quoteIdentifier(col.name, dialect));
-                    }
-
-                    colDefs.push(def);
-                });
-
-                if (pkCols.length > 0) {
-                    colDefs.push(`  PRIMARY KEY (${pkCols.join(', ')})`);
-                }
-
-                sqlScript += colDefs.join(",\n");
-                sqlScript += `\n);\n\n`;
-
-                if (includeInsert && table.rows.length > 0 && table.columns.length > 0) {
-                    sqlScript += `-- Records for '${table.name}' (${table.rows.length} rows)\n`;
-                    const colNames = table.columns.map(c => quoteIdentifier(c.name, dialect)).join(", ");
-                    
-                    table.rows.forEach(row => {
-                        const values = table.columns.map(c => {
-                            const val = row[c.name];
-                            if (val === undefined || val === null || val === "") return "NULL";
-                            if (!isNaN(val) && c.type !== "VARCHAR" && c.type !== "TEXT") return val;
-                            return `'${String(val).replace(/'/g, "''")}'`;
-                        }).join(", ");
-
-                        sqlScript += `INSERT INTO ${quoteIdentifier(table.name, dialect)} (${colNames}) VALUES (${values});\n`;
-                    });
-
-                    sqlScript += `\n`;
-                }
-            });
-
-            document.getElementById("sql-code-output").innerText = sqlScript;
-        }
-
-        function quoteIdentifier(name, dialect) {
-            switch (dialect) {
-                case 'mysql': return `\`${name}\``;
-                case 'postgresql': return `"${name}"`;
-                case 'mssql': return `[${name}]`;
-                default: return `\`${name}\``;
-            }
-        }
-
-        function formatDataType(col, dialect) {
-            let type = col.type.toUpperCase();
-            // PostgreSQL tidak mendukung length pada tipe integer
-            if (dialect === 'postgresql' && ['INT', 'BIGINT', 'INTEGER', 'SMALLINT'].includes(type)) {
-                return type;
-            }
-            if (col.length && !['DATETIME', 'DATE', 'BOOLEAN'].includes(type)) {
-                return `${type}(${col.length})`;
-            }
-            return type;
-        }
-
-        // Format nilai DEFAULT: fungsi & angka tanpa quote, string dengan quote
-        function formatDefaultValue(val) {
-            const v = String(val).trim();
-            if (v === '') return 'NULL';
-            // Fungsi SQL umum & keyword
-            if (/^(CURRENT_TIMESTAMP|NOW\(\)|CURDATE\(\)|CURTIME\(\)|NULL|TRUE|FALSE|UUID\(\)|GETDATE\(\)|SYSDATETIME\(\))$/i.test(v)) {
-                return v.toUpperCase();
-            }
-            // Angka (termasuk negatif & desimal)
-            if (/^-?\d+(\.\d+)?$/.test(v)) return v;
-            // String -> escape single quote
-            return `'${v.replace(/'/g, "''")}'`;
-        }
-
-        function switchTabAndShowSQL() {
-            switchMobileTab('sql');
-            updateSQLPreview();
-        }
-
-        function copySQLToClipboard() {
-            const codeText = document.getElementById("sql-code-output").innerText;
-
-            function showSuccess() {
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'SQL disalin ke clipboard!',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-            }
-
-            // Modern API dengan fallback untuk browser lama
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(codeText).then(showSuccess).catch(() => {
-                    fallbackCopy(codeText);
-                    showSuccess();
-                });
-            } else {
-                fallbackCopy(codeText);
-                showSuccess();
-            }
-        }
-
-        function fallbackCopy(text) {
-            const tempArea = document.createElement("textarea");
-            tempArea.value = text;
-            tempArea.style.position = "fixed";
-            tempArea.style.opacity = "0";
-            document.body.appendChild(tempArea);
-            tempArea.select();
-            try { document.execCommand("copy"); } catch (e) { console.error("Copy gagal:", e); }
-            document.body.removeChild(tempArea);
-        }
-
-        function downloadSQLFile() {
-            const codeText = document.getElementById("sql-code-output").innerText;
-            const blob = new Blob([codeText], { type: "text/plain;charset=utf-8" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `sql_filler_backup_${Date.now()}.sql`;
-            link.click();
-        }
-
-        function exportJSONSchema() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `sql_filler_multidb_${Date.now()}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-
-        function triggerImportJSON() {
-            document.getElementById("import-json-file-input").click();
-        }
-
-        function triggerImportSQLModal() {
-            Swal.fire({
-                title: 'Import Script SQL',
-                html: `
-                    <div class="text-start fs-8 text-muted mb-3">Impor struktur tabel dan data records langsung dari file atau text SQL dump.</div>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-outline-primary text-start p-3 rounded-3" onclick="Swal.close(); triggerImportSQLFile();">
-                            <i class="bi bi-file-earmark-arrow-up fs-5 me-2 align-middle"></i>
-                            <b>Upload File Script SQL (.sql)</b>
-                            <div class="fs-8 text-muted mt-1">Pilih file database dump .sql dari perangkat Anda</div>
-                        </button>
-                        <button class="btn btn-outline-secondary text-start p-3 rounded-3" onclick="Swal.close(); promptPasteSQLText();">
-                            <i class="bi bi-code-slash fs-5 me-2 align-middle"></i>
-                            <b>Paste Text Query / DDL SQL</b>
-                            <div class="fs-8 text-muted mt-1">Tempelkan perintah CREATE TABLE & INSERT INTO di sini</div>
-                        </button>
-                    </div>
-                `,
-                showConfirmButton: false,
-                showCancelButton: true,
-                cancelButtonText: 'Batal'
-            });
-        }
-
-        function triggerImportSQLFile() {
-            document.getElementById("import-sql-file-input").click();
-        }
-
-        function promptPasteSQLText() {
-            Swal.fire({
-                title: 'Paste Text Script SQL',
-                input: 'textarea',
-                inputPlaceholder: 'CREATE DATABASE db_contoh;\nCREATE TABLE users (id INT PRIMARY KEY, nama VARCHAR(100));\nINSERT INTO users VALUES (1, "Budi");',
-                inputAttributes: {
-                    style: 'height: 220px; font-family: monospace; font-size: 0.8rem;'
-                },
-                showCancelButton: true,
-                confirmButtonText: 'Proses Import SQL',
-                cancelButtonText: 'Batal',
-                preConfirm: (text) => {
-                    if (!text || !text.trim()) {
-                        Swal.showValidationMessage('Teks SQL tidak boleh kosong!');
-                    }
-                    return text;
-                }
-            }).then((res) => {
-                if (res.isConfirmed && res.value) {
-                    executeSQLImportText(res.value);
-                }
-            });
-        }
-
-        function handleImportSQLFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const sqlContent = e.target.result;
-                    executeSQLImportText(sqlContent);
-                } catch (err) {
-                    Swal.fire('Error Import', err.message || 'Gagal membaca file SQL.', 'error');
-                } finally {
-                    event.target.value = "";
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function executeSQLImportText(sqlText) {
-            try {
-                const parsedDbMap = parseSQLScript(sqlText);
-                const dbNames = Object.keys(parsedDbMap);
-
-                if (dbNames.length === 0) {
-                    Swal.fire('Peringatan', 'Tidak ada instruksi CREATE TABLE atau INSERT INTO yang valid ditemukan dalam script SQL.', 'warning');
-                    return;
-                }
-
-                let totalTables = 0;
-                let totalRows = 0;
-
-                dbNames.forEach(dbName => {
-                    const importedDb = parsedDbMap[dbName];
-                    let existingDb = appState.databases.find(d => d.name.toLowerCase() === dbName.toLowerCase());
-
-                    if (!existingDb) {
-                        existingDb = {
-                            name: dbName,
-                            activeTableIndex: 0,
-                            tables: []
-                        };
-                        appState.databases.push(existingDb);
-                    }
-
-                    importedDb.tables.forEach(impTbl => {
-                        totalTables++;
-                        totalRows += impTbl.rows.length;
-
-                        let existingTblIdx = existingDb.tables.findIndex(t => t.name.toLowerCase() === impTbl.name.toLowerCase());
-                        if (existingTblIdx >= 0) {
-                            // Merge/Replace Table
-                            existingDb.tables[existingTblIdx] = impTbl;
-                        } else {
-                            existingDb.tables.push(impTbl);
-                        }
-                    });
-                });
-
-                // Switch to first imported DB
-                const firstDbName = dbNames[0];
-                const activeIndex = appState.databases.findIndex(d => d.name.toLowerCase() === firstDbName.toLowerCase());
-                if (activeIndex >= 0) appState.activeDbIndex = activeIndex;
-
-                saveToLocalStorage();
-                renderAllUI();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Import SQL Berhasil!',
-                    html: `
-                        <div class="text-start fs-8">
-                            <div><i class="bi bi-database-check text-primary me-2"></i> Database: <b>${dbNames.length}</b> (${dbNames.join(', ')})</div>
-                            <div><i class="bi bi-table text-success me-2"></i> Total Tabel: <b>${totalTables}</b></div>
-                            <div><i class="bi bi-grid-3x3-gap text-warning me-2"></i> Total Data Records: <b>${totalRows}</b></div>
-                        </div>
-                    `,
-                    confirmButtonColor: '#6200ee'
-                });
-
-            } catch (err) {
-                console.error("SQL Parsing Error:", err);
-                Swal.fire('Gagal Parsing SQL', 'Terjadi kesalahan saat memproses skrip SQL: ' + err.message, 'error');
-            }
-        }
-
-        function parseSQLScript(sqlText) {
-            // Clean multiline and single-line SQL comments
-            let cleaned = sqlText
-                .replace(/\/\*[\s\S]*?\*\//g, '')
-                .replace(/--.*$/gm, '')
-                .replace(/#.*$/gm, '');
-
-            let currentDbName = getCurrentDatabase() ? getCurrentDatabase().name : "db_imported";
-            let dbMap = {};
-
-            function getDbObj(dbName) {
-                if (!dbMap[dbName]) {
-                    dbMap[dbName] = { name: dbName, tables: [] };
-                }
-                return dbMap[dbName];
-            }
-
-            const rawStatements = cleaned.split(';');
-
-            for (let stmt of rawStatements) {
-                let trimmed = stmt.trim();
-                if (!trimmed) continue;
-
-                // 1. Detect CREATE DATABASE
-                let createDbMatch = trimmed.match(/CREATE\s+DATABASE\s+(?:IF\s+NOT\s+EXISTS\s+)?[\`"\[]?([a-zA-Z0-9_]+)[\`"\]]?/i);
-                if (createDbMatch) {
-                    currentDbName = createDbMatch[1];
-                    getDbObj(currentDbName);
-                    continue;
-                }
-
-                // 2. Detect USE database
-                let useDbMatch = trimmed.match(/USE\s+[\`"\[]?([a-zA-Z0-9_]+)[\`"\]]?/i);
-                if (useDbMatch) {
-                    currentDbName = useDbMatch[1];
-                    getDbObj(currentDbName);
-                    continue;
-                }
-
-                // 3. Detect CREATE TABLE
-                let createTableMatch = trimmed.match(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?[\`"\[]?([a-zA-Z0-9_]+)[\`"\]]?\s*\(([\s\S]+)\)/i);
-                if (createTableMatch) {
-                    let tableName = createTableMatch[1];
-                    let body = createTableMatch[2];
-
-                    let tableObj = {
-                        name: tableName,
-                        columns: [],
-                        rows: []
-                    };
-
-                    let lines = splitSqlCommaList(body);
-                    let pkList = [];
-
-                    // Scan primary keys
-                    for (let line of lines) {
-                        let lTrim = line.trim();
-                        let pkMatch = lTrim.match(/^PRIMARY\s+KEY\s*\(([^)]+)\)/i);
-                        if (pkMatch) {
-                            let cols = pkMatch[1].split(',').map(c => c.trim().replace(/[\`"\[\]]/g, ''));
-                            pkList.push(...cols);
-                        }
-                    }
-
-                    for (let line of lines) {
-                        let lTrim = line.trim();
-                        if (/^(PRIMARY\s+KEY|KEY|INDEX|CONSTRAINT|UNIQUE\s+KEY|FOREIGN\s+KEY)/i.test(lTrim)) {
-                            continue;
-                        }
-
-                        let colMatch = lTrim.match(/^[\`"\[]?([a-zA-Z0-9_]+)[\`"\]]?\s+([a-zA-Z0-9_]+)(?:\(([^)]+)\))?(.*)$/i);
-                        if (colMatch) {
-                            let cName = colMatch[1];
-                            let cType = colMatch[2].toUpperCase();
-                            let cLen = colMatch[3] || "";
-                            let cAttrs = colMatch[4] || "";
-
-                            let isPk = pkList.includes(cName) || /PRIMARY\s+KEY/i.test(cAttrs);
-                            let isAi = /(AUTO_INCREMENT|AUTOINCREMENT|SERIAL|IDENTITY)/i.test(cAttrs);
-                            let isNotNull = /NOT\s+NULL/i.test(cAttrs);
-
-                            let defaultVal = "";
-                            let defMatch = cAttrs.match(/DEFAULT\s+('(?:''|[^'])*'|\w+)/i);
-                            if (defMatch) {
-                                defaultVal = defMatch[1].replace(/^'|'$/g, '').replace(/''/g, "'");
-                            }
-
-                            tableObj.columns.push({
-                                name: cName,
-                                type: normalizeDataType(cType),
-                                length: cLen,
-                                pk: isPk,
-                                ai: isAi,
-                                notNull: isNotNull,
-                                defaultValue: defaultVal
-                            });
-                        }
-                    }
-
-                    let db = getDbObj(currentDbName);
-                    let existingIdx = db.tables.findIndex(t => t.name.toLowerCase() === tableName.toLowerCase());
-                    if (existingIdx >= 0) {
-                        db.tables[existingIdx] = tableObj;
-                    } else {
-                        db.tables.push(tableObj);
-                    }
-                    continue;
-                }
-
-                // 4. Detect INSERT INTO
-                let insertMatch = trimmed.match(/INSERT\s+INTO\s+[\`"\[]?([a-zA-Z0-9_]+)[\`"\]]?\s*(?:\(([^)]+)\))?\s*VALUES\s*([\s\S]+)/i);
-                if (insertMatch) {
-                    let tableName = insertMatch[1];
-                    let colNamesRaw = insertMatch[2];
-                    let valuesRaw = insertMatch[3];
-
-                    let db = getDbObj(currentDbName);
-                    let table = db.tables.find(t => t.name.toLowerCase() === tableName.toLowerCase());
-                    if (!table) {
-                        table = { name: tableName, columns: [], rows: [] };
-                        db.tables.push(table);
-                    }
-
-                    let targetCols = [];
-                    if (colNamesRaw) {
-                        targetCols = colNamesRaw.split(',').map(c => c.trim().replace(/[\`"\[\]]/g, ''));
-                    } else if (table.columns.length > 0) {
-                        targetCols = table.columns.map(c => c.name);
-                    }
-
-                    let valueTuples = parseSqlValueTuples(valuesRaw);
-                    for (let tuple of valueTuples) {
-                        let row = {};
-                        tuple.forEach((val, idx) => {
-                            let colName = targetCols[idx] || (table.columns[idx] ? table.columns[idx].name : `col_${idx+1}`);
-                            row[colName] = val;
-
-                            if (!table.columns.some(c => c.name === colName)) {
-                                table.columns.push({
-                                    name: colName,
-                                    type: isNaN(val) ? "VARCHAR" : "INT",
-                                    length: isNaN(val) ? "100" : "11",
-                                    pk: false,
-                                    ai: false,
-                                    notNull: false,
-                                    defaultValue: ""
-                                });
-                            }
-                        });
-                        table.rows.push(row);
-                    }
-                }
-            }
-
-            return dbMap;
-        }
-
-        function splitSqlCommaList(str) {
-            let results = [];
-            let current = "";
-            let inQuotes = false;
-            let quoteChar = "";
-            let parenDepth = 0;
-
-            for (let i = 0; i < str.length; i++) {
-                let ch = str[i];
-                if ((ch === "'" || ch === '"' || ch === '`') && (i === 0 || str[i-1] !== '\\')) {
-                    if (!inQuotes) {
-                        inQuotes = true;
-                        quoteChar = ch;
-                    } else if (quoteChar === ch) {
-                        inQuotes = false;
-                    }
-                } else if (!inQuotes) {
-                    if (ch === '(') parenDepth++;
-                    else if (ch === ')') parenDepth--;
-                    else if (ch === ',' && parenDepth === 0) {
-                        results.push(current);
-                        current = "";
-                        continue;
-                    }
-                }
-                current += ch;
-            }
-            if (current.trim()) results.push(current);
-            return results;
-        }
-
-        function parseSqlValueTuples(str) {
-            let tuples = [];
-            let inTuple = false;
-            let currentTuple = [];
-            let currentVal = "";
-            let inQuotes = false;
-            let quoteChar = "";
-
-            for (let i = 0; i < str.length; i++) {
-                let ch = str[i];
-
-                if (!inTuple) {
-                    if (ch === '(') {
-                        inTuple = true;
-                        currentTuple = [];
-                        currentVal = "";
-                    }
-                } else {
-                    if ((ch === "'" || ch === '"') && (i === 0 || str[i-1] !== '\\')) {
-                        if (!inQuotes) {
-                            inQuotes = true;
-                            quoteChar = ch;
-                        } else if (quoteChar === ch) {
-                            if (i + 1 < str.length && str[i + 1] === ch) {
-                                currentVal += ch;
-                                i++;
-                            } else {
-                                inQuotes = false;
-                            }
-                        } else {
-                            currentVal += ch;
-                        }
-                    } else if (!inQuotes && ch === ',') {
-                        currentTuple.push(cleanSqlValue(currentVal));
-                        currentVal = "";
-                    } else if (!inQuotes && ch === ')') {
-                        currentTuple.push(cleanSqlValue(currentVal));
-                        tuples.push(currentTuple);
-                        inTuple = false;
-                        currentVal = "";
-                    } else {
-                        currentVal += ch;
-                    }
-                }
-            }
-            return tuples;
-        }
-
-        function cleanSqlValue(val) {
-            let trimmed = val.trim();
-            if (trimmed.toUpperCase() === 'NULL') return '';
-            if ((trimmed.startsWith("'") && trimmed.endsWith("'")) || (trimmed.startsWith('"') && trimmed.endsWith('"'))) {
-                return trimmed.slice(1, -1).replace(/''/g, "'").replace(/\\'/g, "'").replace(/\\"/g, '"');
-            }
-            return trimmed;
-        }
-
-        function normalizeDataType(type) {
-            let t = type.toUpperCase();
-            if (["INT", "INTEGER", "SMALLINT", "TINYINT", "MEDIUMINT"].includes(t)) return "INT";
-            if (["BIGINT"].includes(t)) return "BIGINT";
-            if (["VARCHAR", "CHAR", "NVARCHAR", "VARCHAR2"].includes(t)) return "VARCHAR";
-            if (["TEXT", "MEDIUMTEXT", "LONGTEXT"].includes(t)) return "TEXT";
-            if (["DECIMAL", "NUMERIC", "FLOAT", "DOUBLE"].includes(t)) return "DECIMAL";
-            if (["DATETIME", "TIMESTAMP"].includes(t)) return "DATETIME";
-            if (["DATE"].includes(t)) return "DATE";
-            if (["BOOLEAN", "BOOL", "BIT"].includes(t)) return "BOOLEAN";
-            if (["ENUM"].includes(t)) return "ENUM";
-            return "VARCHAR";
-        }
-
-        function handleImportJSON(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (imported && Array.isArray(imported.databases)) {
-                        appState = imported;
-                    } else if (imported && Array.isArray(imported.tables)) {
-                        // Import legacy format
-                        appState = {
-                            activeDbIndex: 0,
-                            databases: [{ name: "db_imported", activeTableIndex: 0, tables: imported.tables }]
-                        };
-                    } else {
-                        throw new Error("Format JSON tidak dikenali.");
-                    }
-
-                    saveToLocalStorage();
-                    renderAllUI();
-                    Swal.fire('Import Berhasil!', 'Data berhasil dimuat.', 'success');
-                } catch (err) {
-                    Swal.fire('Error', err.message || 'File JSON rusak.', 'error');
-                } finally {
-                    event.target.value = "";
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function toggleMobileSidebar(show) {
-            const sidebar = document.getElementById("app-sidebar");
-            const backdrop = document.getElementById("sidebar-backdrop");
-            if (show) {
-                sidebar.classList.add("show-mobile");
-                backdrop.classList.add("show");
-            } else {
-                sidebar.classList.remove("show-mobile");
-                backdrop.classList.remove("show");
-            }
-        }
-
-        function switchMobileTab(target) {
-            const tabsMap = {
-                'tables': () => toggleMobileSidebar(true),
-                'columns': () => new bootstrap.Tab(document.getElementById('columns-tab')).show(),
-                'data': () => new bootstrap.Tab(document.getElementById('data-tab')).show(),
-                'erd': () => new bootstrap.Tab(document.getElementById('erd-tab')).show(),
-                'sql': () => new bootstrap.Tab(document.getElementById('sql-tab')).show()
-            };
-
-            // Update mobile bottom nav active style
-            document.querySelectorAll(".mobile-nav-item").forEach(el => el.classList.remove("active"));
-            const activeBtn = document.getElementById(`mob-nav-${target}`);
-            if (activeBtn) activeBtn.classList.add("active");
-
-            if (tabsMap[target]) tabsMap[target]();
-        }
-
-        function initPWAInstallPrompt() {
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPWAPrompt = e;
-                const pwaBtn = document.getElementById('pwa-install-btn');
-                if (pwaBtn) {
-                    pwaBtn.classList.remove('d-none');
-                    pwaBtn.classList.add('d-flex');
-                }
-            });
-        }
-
-        function installPWAApp() {
-            if (!deferredPWAPrompt) return;
-            deferredPWAPrompt.prompt();
-            deferredPWAPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('PWA installed');
-                }
-                deferredPWAPrompt = null;
-            });
-        }
-    </script>
 </body>
+
 </html>
