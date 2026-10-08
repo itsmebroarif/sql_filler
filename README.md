@@ -64,6 +64,18 @@ python -m http.server 8000
 - highlight.js (syntax highlighting SQL)
 - SweetAlert2
 
+## DBMS Mode (PHP MVC)
+
+Root project ini sekarang juga menjadi DBMS sungguhan (PHP 8 + PDO) dengan konsep MVC dan OOP penuh:
+
+- Autentikasi ala Adminer (driver, server, username, password, database — session-based, + proteksi CSRF).
+- Route rapih di `config/routes.php`: `/login`, `/`, `/table/{name}`, `/query`, `/import`, `/export`.
+- Layer: `app/Core` (Router, Controller, View, Auth), `app/Controllers`, `app/Services` (Database, Import, Export), `app/Helpers`, `resources/views` (Bootstrap 5 + Material fonts).
+- Fitur: browse tabel dengan mode **Table / Card**, console SQL manual, import SQL & CSV, export CSV & SQL.
+- Adminer lama tetap tersedia di `adminer.php`.
+
+Jalankan dengan server PHP apa pun, mis. `php -S localhost:8000` dari folder ini.
+
 ## Roadmap — Under Development
 
 - [ ] **Sinkronisasi ke database lokal sungguhan** — koneksi langsung ke MySQL/PostgreSQL/SQLite lokal agar aplikasi bisa menjadi klien remote.
