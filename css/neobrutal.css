@@ -88,6 +88,24 @@ body {
     color: #f5f5f5 !important;
     border: 2px solid transparent;
     border-radius: 10px !important;
+    justify-content: flex-start !important;
+    gap: 0.6rem;
+}
+
+a.table-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start !important;
+}
+
+a.table-list-item > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+a.table-list-item > .bi-chevron-right {
+    margin-left: auto;
 }
 
 .table-list-item:hover {
