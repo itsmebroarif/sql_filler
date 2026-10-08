@@ -16,10 +16,11 @@ class DatabaseService
     public function connect(array $creds): PDO
     {
         $driver = $creds['driver'] ?? 'mysql';
+        $dbName = $creds['database'] ?? '';
         $dsn = match ($driver) {
-            'mysql' => sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', $creds['server'] ?? 'localhost', $creds['database'] ?? ''),
-            'pgsql' => sprintf('pgsql:host=%s;dbname=%s', $creds['server'] ?? 'localhost', $creds['database'] ?? ''),
-            'sqlite' => 'sqlite:' . ($creds['database'] ?? ''),
+            'mysql' => sprintf('mysql:host=%s;charset=utf8mb4%s', $creds['server'] ?? 'localhost', $dbName !== '' ? ';dbname=' . $dbName : ''),
+            'pgsql' => sprintf('pgsql:host=%s%s', $creds['server'] ?? 'localhost', $dbName !== '' ? ';dbname=' . $dbName : ';dbname=postgres'),
+            'sqlite' => 'sqlite:' . $dbName,
             default => throw new \InvalidArgumentException('Driver tidak dikenal: ' . $driver),
         };
 
@@ -27,6 +28,16 @@ class DatabaseService
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ]);
+    }
+
+    public function databases(PDO $pdo, string $driver): array
+    {
+        return match ($driver) {
+            'mysql' => $pdo->query('SHOW DATABASES')->fetchAll(PDO::FETCH_COLUMN),
+            'pgsql' => $pdo->query('SELECT datname FROM pg_database ORDER BY datname')->fetchAll(PDO::FETCH_COLUMN),
+            'sqlite' => [],
+            default => [],
+        };
     }
 
     public function tables(PDO $pdo, string $driver): array

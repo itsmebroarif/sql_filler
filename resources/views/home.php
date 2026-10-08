@@ -1,4 +1,21 @@
-<?php /** @var array $tables @var array $creds */ ?>
+<?php /** @var array $tables @var array $creds @var array|null $databases */ ?>
+<?php if (!empty($databases)): ?>
+    <div class="mb-3">
+        <h5 class="fw-bold mb-0 text-secondary"><i class="bi bi-databases me-1"></i> Pilih Database</h5>
+        <small class="text-muted">Anda login tanpa database. Pilih salah satu untuk melanjutkan.</small>
+    </div>
+    <div class="row g-3">
+        <?php foreach ($databases as $db): ?>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <a class="card card-custom p-3 text-decoration-none d-flex align-items-center gap-2" href="<?= e(url('/database', ['name' => $db])) ?>">
+                    <i class="bi bi-database text-primary fs-4"></i>
+                    <b class="text-dark"><?= e($db) ?></b>
+                </a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php else: ?>
+
 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h5 class="fw-bold mb-0 text-secondary"><i class="bi bi-speedometer2 me-1"></i> Dashboard</h5>
@@ -48,3 +65,4 @@
         </div>
     <?php endforeach; ?>
 </div>
+<?php endif; ?>

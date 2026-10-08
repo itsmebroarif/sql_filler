@@ -19,6 +19,19 @@ class HomeController extends Controller
         $creds = Auth::creds();
         $service = new DatabaseService($creds['driver']);
         $pdo = $service->connect($creds);
+
+        if (($creds['database'] ?? '') === '' && $creds['driver'] !== 'sqlite') {
+            // Belum ada database terpilih: tampilkan daftar database
+            $databases = $service->databases($pdo, $creds['driver']);
+            $this->view('home', [
+                'title' => 'Pilih Database — SQL FILLER DBMS',
+                'tables' => [],
+                'databases' => $databases,
+                'creds' => $creds,
+            ]);
+            return;
+        }
+
         $tables = $service->tables($pdo, $creds['driver']);
 
         $this->view('home', [
@@ -26,6 +39,19 @@ class HomeController extends Controller
             'tables' => $tables,
             'creds' => $creds,
         ]);
+    }
+
+    public function selectDatabase(): void
+    {
+        $this->requireLogin();
+        $name = trim((string) ($_GET['name'] ?? ''));
+        $creds = Auth::creds();
+        if ($name !== '') {
+            $creds['database'] = $name;
+            Auth::login($creds);
+            flash('success', "Database '{$name}' dipilih.");
+        }
+        $this->redirect('/');
     }
 
     public function table(array $params): void

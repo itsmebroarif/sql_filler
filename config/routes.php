@@ -13,6 +13,7 @@ $router->post('/login', [AuthController::class, 'login']);
 $router->post('/logout', [AuthController::class, 'logout']);
 
 $router->get('/', [HomeController::class, 'index']);
+$router->get('/database', [HomeController::class, 'selectDatabase']);
 $router->get('/table/{name}', [HomeController::class, 'table']);
 $router->match(['GET', 'POST'], '/query', [HomeController::class, 'query']);
 $router->match(['GET', 'POST'], '/import', [HomeController::class, 'import']);
